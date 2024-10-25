@@ -77,7 +77,7 @@ section{
     z-index: 888;
     color: #fff;
     width: 70%;
-    margin-top: 50px;
+    margin-top: 190px;
 }
 
 .Home .content h1{
@@ -96,6 +96,7 @@ section{
 
 .Home .content p{
     margin-bottom: 65px;
+    font-size: 40px;
 }
 
 .Home .content a{
