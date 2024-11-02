@@ -1,0 +1,245 @@
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #05051fd0;
+    overflow-x: hidden;
+    cursor: pointer;
+}
+
+.titulo {
+    color: white;
+    font-weight: 700;
+    text-align: center;
+    font-size: 50px;
+    margin: 0;
+    position: absolute;
+    left: 18%;
+}
+
+.titulo2 {
+    color: white;
+    font-weight: 700;
+    display: flex;
+    justify-content: center;
+    margin-top: 48px;
+    margin-left: 125px;
+
+}
+
+@font-face {
+    font-family: face;
+    src: url(../Britannic\ Bold\ Regular/.titulo/.titulo2/.banner);
+}
+
+@font-face {
+    font-family: face;
+    src: url(../Brawler/Brawler-Regular.ttf./.navbar);
+}
+
+* {
+    scroll-behavior: smooth;
+}
+
+.navbar {
+    width: 300px;
+    color: white;
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: larger;
+    gap: 5vh;
+
+
+}
+
+.navbar li {
+    margin-right: 20px;
+}
+
+.header {
+    border-bottom: 3px solid #4682b4;
+    position: fixed;
+    top: 0;
+    background-color: black;
+    width: 100%;
+    z-index: 3;
+}
+
+
+.container {
+    width: 80px;
+    margin: auto;
+    display: flex;
+    justify-content: center;
+}
+
+.containerTit {
+    position: relative;
+    background-color: #4682b4;
+    color: white;
+    display: flex;
+    height: fit-content;
+    width: 200px;
+    align-items: start;
+    margin-left: 50px;
+    margin-bottom: -80px;
+
+}
+
+.header .container {
+    justify-content: space-evenly;
+
+}
+
+.navbar a {
+    color: white;
+    text-decoration: none;
+}
+
+.navbar a:hover {
+    color: #4682b4;
+}
+
+.divLC {
+    display: flex;
+    gap: 2vh;
+    margin-left: 55%;
+}
+
+.containerTit a {
+    text-decoration: none;
+}
+
+.container2 {
+    height: 70vh;
+    width: 88%;
+    margin: auto;
+    margin-top: 25vh;
+    margin-left: 12vh;
+    margin-right: 10vh;
+    display: flex;
+    justify-content: center;
+    border: 2px solid black;
+    background-color: #4682b4;
+    align-items: center;
+    flex-direction: column;
+}
+
+.conteudo {
+    text-align: center;
+    /* margin-left: 50px; */
+}
+
+.conteudo h1 {
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 0;
+}
+
+
+.imagens {
+    flex-direction: row;
+    object-fit: cover;
+    flex-wrap: wrap;
+}
+
+.imagens .card{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: -50px;
+    flex-direction: column;
+}
+
+.imagens .card img {
+    width: 200px;
+    height: 250px;
+    margin-right: 20px;
+    justify-content: center;
+    border: 2px solid black;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+.imagens .card img:hover{
+    transform: scale(1.05);
+}
+
+.botao {
+    border-radius: 15px;
+    height: 40px;
+    width: 120px;
+    border: none;
+    background-color: black;
+    color: white;
+    font-size: 22px;
+    font-family: "Brawler", serif;
+    font-weight: 800;
+    font-style: normal;
+    box-shadow: 4px 5px 0px #05051fd0;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-left: 43%;
+    cursor: pointer;
+}
+
+.slider .imagens li{
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
+.nav-botao .btn {
+    width: 130px;
+    height: 40px;
+    font-weight: 500;
+    background: rgba(255, 255, 255,0.4);
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: 0.3s ease;
+    margin-top: 45px;
+}
+
+.nav-botao{
+    margin-right: 2.5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    
+}
+
+.btn:hover{
+    background: rgba(255, 255, 255, 0.3);
+}
+
+
+.btn.white-btn{
+    background: rgba(255, 255, 255, 0.7);
+}
+
+.btn.btn.white-btn:hover{
+    background: rgba(255, 255, 255, 0.7);
+}
+
+.container2 .imagens {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width:fit-content;
+    height: 420px;
+    overflow: hidden;
+    z-index: 2;
+}
+
+.card span {
+    margin-top: 3vh;
+}

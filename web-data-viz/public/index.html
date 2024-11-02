@@ -1,60 +1,87 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="css/styleHome.css">
-
+    <title>Inner Guide</title>
+    <link rel="stylesheet" href="./css/inicio.css">
+    <script src="https://unpkg.com/scrollreveal"></script>
 </head>
-<body>
 
-    <header>
-        <a href="#" class="brand">Friends</a>
-        <div class="menu-btn"></div>
-        <div class="navigation">
-            <div class="navigation-itens">
-                <a href="Home.html">Home</a>
-                <a href="#Home-Card">Sobre o filme</a>
-                <a href="#Sobre-Mim">Sobre mim</a>
-                <a href="Cadastro.html">Cadastro</a>
-                <a href="Cadastro.html">Login</a>
+<body>
+    <section id="Inicio">
+        <div class="header">
+            <div class="containerTit">
+                <a href="#Inicio">
+                    <h1 class="titulo">Inner</h1>
+                    <div>
+                        <h2 class="titulo2">Guide</h2>
+                    </div>
+                </a>
+            </div>
+            <div class="container">
+                <ul class="navbar">
+                    <a href="#Inicio">
+                        <li>Home</li>
+                    </a>
+                    <a href="#Sobre" onclick="scrollToSection('Sobre')">
+                        <li>Sobre</li>
+                    </a>
+                    <a href="#Tendencias">
+                        <li>Tendências</li>
+                    </a>
+                    <a href="#guia">
+                        <li>Guia</li>
+                    </a>
+                    <a href="#sobreMim">
+                        <li>Criadora</li>
+                    </a>
+
+                    <div class="divLC">
+                        <a href="login2.html">
+                            <li>Login</li>
+                        </a>
+                        <li>|</li>
+                        <a href="./cadastro2.html">
+                            <li>Cadastro</li>
+                        </a>
+                    </div>
+                </ul>
             </div>
         </div>
+    </section>
 
-    </header>
 
-    <section class="Home">
-        <video class="video-slide active" src="./assets/abertura.mp4" autoplay muted loop></video>
-        <video class="video-slide" src="./assets/sorvete.mp4" autoplay muted loop></video>
-        <video class="video-slide" src="./assets/surf.mp4" autoplay muted loop></video>
-        <div class="content">
-            <h1>Friends<span></span></h1>
-            <!-- <p>I WILL ALWAYS BE WITH YOU</p> -->
-           
-            <a href="#">Saiba Mais</a>
+    <div class="banner">
+        <div class="container">
+            <p>Inner Guide</p>
         </div>
+    </div>
 
-        <div class="media-icons">
-            <a href="#"> <i class="fab fa-facebook-f"></i></a>
-            <a href="#"> <i class="fab fa-instagram"></i></a>
-            <a href="#"> <i class="fab fa-twitter"></i></a>
-        </div>
+    <section id="Sobre">
+        <div class="sobre">
+            
+            <div class="titulo2">
+                <h1>Inner Guide</h1>
+            </div>
+            <div class="conteudo">
 
-        <div class="slider-navigation">
-            <div class="nav-btn active"></div>
-            <div class="nav-btn"></div>
-            <div class="nav-btn"></div>
+
+                <p>Os livros de autoajuda são obras que oferecem orientações e estratégias para o desenvolvimento pessoal, 
+                    emocional e psicológico. Eles abordam temas como autoestima, relacionamentos, motivação e superação de desafios.
+                     Esses livros visam capacitar os leitores a se tornarem protagonistas de suas próprias vidas, proporcionando
+                      ferramentas para enfrentar dificuldades e melhorar a qualidade de vida.</p>
+            </div>
         </div>
-        
     </section>
 
     <section class="Home-Card" id="Home-Card">
         <div class="wrapper">
             <div class="card">
-                <img src="./assets/monica-e-chandler.webp" alt="">
+                <img src="./assets/o-obvio.jpg" alt="">
                 <div class="info">
-                    <h1>Chander & Monica</h1>
+                    <h1>O óbvio tambem precisa ser dito.</h1>
                     
                     <a href="#" class="botao">Saiba Mais!</a>
                 </div>
@@ -62,9 +89,9 @@
             </div>
 
             <div class="card">
-                <img src="./assets/ross e rachel.jpg" alt="">
+                <img src="./assets/texto-crueis.jpg" alt="">
                 <div class="info">
-                    <h1>Ross & Rachel</h1>
+                    <h1>Textos crueis demais para serem lidos rapidamente.</h1>
     
                     <a href="#" class="botao">Saiba Mais!</a>
                 </div>
@@ -72,9 +99,9 @@
             </div>
 
             <div class="card">
-                <img src="./assets/joey e phoebe.jpg" alt="">
+                <img src="./assets/pratileiras-livro.jpg" alt="">
                 <div class="info">
-                    <h1>Joey & Phoebe</h1>
+                    <h1>Stitch: O Filme</h1>
                     
                     <a href="#" class="botao">Saiba Mais!</a>
                 </div>
@@ -84,54 +111,289 @@
         </div>
     </section>
 
-    <section class="Sobre-Mim" id="Sobre-Mim">
-        
-        <div class="book">
-            <img src="../public/assets/imgs/eusorrir.jpeg" alt="">
-            <div class="cover">
-                <img src="../public/assets/imgs/eu.jpeg" alt="">
+   
+
+    <section id="guia">
+        <div class="slide-container">
+            <h2 class="centralizadoT">Ajude a moda sustentável e conheça os melhores brechós de SP!</h2>
+            <div class="slider">
+                <div class="numbertext">1</div>
+                <img src="./assets/brechoVoJudith.jpg">
+                <div class="text">
+                    <h3>Brechó Vó Judith</h3>
+                    <p>Rua Cayowaá, 2304 - Sumaré, São Paulo - SP, 01258-010</p>
+                </div>
             </div>
-           </div>
 
-           <div class="textosobre">
-            <h1>Sobre Mim</h1> <br> <br><br>
-            <h4>Me chamo Natalia,xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx <br>
-                <br>
-               xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</h4>
-           </div>
+            <div class="slider">
+                <div class="numbertext">2</div>
+                <img src="./assets/digForFashion.JPG">
+                <div class="text">
+                    <h3>Dig For Fashion Augusta - Brechó</h3>
+                    <p>R. Augusta, 2078 - Jardim Paulista, São Paulo - SP, 01412-000</p>
+                </div>
+            </div>
 
+            <div class="slider">
+                <div class="numbertext">3</div>
+                <img src="./assets/vitrinecriativa.jpg">
+                <div class="text">
+                    <h3>Vitrine Criativa (Brechó)</h3>
+                    <p>R. Augusta, 1940 - Cerqueira César, São Paulo - SP, 01412-000</p>
+                </div>
+            </div>
 
+            <div class="slider">
+                <div class="numbertext">4</div>
+                <img src="./assets/brechoTheBest.jpg">
+                <div class="text">
+                    <h3>Brechó The Best Ponta de Estoque</h3>
+                    <p> R. Humberto I, 418 - Vila Mariana, São Paulo - SP, 04018-031</p>
+                </div>
+            </div>
+
+            <div class="slider">
+                <div class="numbertext">5</div>
+                <img src="./assets/clubHoms.jpg">
+                <div class="text">
+                    <h3>Club Homs</h3>
+                    <p>Club Homs - Av. Paulista, 735 - Jardins, São Paulo </p>
+                </div>
+            </div>
+
+            <div class="slider">
+                <div class="numbertext">6</div>
+                <img src="./assets/brecho013.png">
+                <div class="text">
+                    <h3>Brechó 013</h3>
+                    <p>R. Dr. Campos Moura, 295 - Parque Artur Alvim, São Paulo - SP, 03568-010 </p>
+                </div>
+            </div>
+
+            <div class="slider">
+                <div class="numbertext">7</div>
+                <img src="./assets/coletivo110.jpg">
+                <div class="text">
+                    <h3>Coletivo 110</h3>
+                    <p>R. Dom José de Barros, 337 - Sala 308, terceiro andar - República, São Paulo - SP, 01036-000</p>
+                </div>
+            </div>
+
+            <div class="slider">
+                <div class="numbertext">8</div>
+                <img src="./assets/feesp.jpg">
+                <div class="text">
+                    <h3>Federação Espírita do Estado de São Paulo - FEESP</h3>
+                    <p> R. Maria Paula, 140 - Bela Vista, São Paulo - SP, 01319-001</p>
+                </div>
+            </div>
+
+            <div class="slider">
+                <div class="numbertext">9</div>
+                <img src="./assets/genebra.jpg">
+                <div class="text">
+                    <h3>Brechó Genebra</h3>
+                    <p> R. Genebra, 237 - Bela Vista, São Paulo - SP, 01316-010</p>
+                </div>
+            </div>
+
+            <div class="slider">
+                <div class="numbertext">10</div>
+                <img src="./assets/genebra.jpg">
+                <div class="text">
+                    <h3>Bazar D'Achiropita</h3>
+                    <p> R. Treze de Maio, 430 - Bela Vista, São Paulo - SP, 01327-000</p>
+                </div>
+            </div>
+
+            <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
+            <a class="next" onclick="plusSlides(1)">&#10095;</a>
+        </div>
+        <br>
+        <div style="text-align:center">
+            <span class="dot" onclick="currentSlide(1)"></span>
+            <span class="dot" onclick="currentSlide(2)"></span>
+            <span class="dot" onclick="currentSlide(3)"></span>
+            <span class="dot" onclick="currentSlide(4)"></span>
+            <span class="dot" onclick="currentSlide(5)"></span>
+            <span class="dot" onclick="currentSlide(6)"></span>
+            <span class="dot" onclick="currentSlide(7)"></span>
+            <span class="dot" onclick="currentSlide(8)"></span>
+            <span class="dot" onclick="currentSlide(9)"></span>
+            <span class="dot" onclick="currentSlide(10)"></span>
+        </div>
+    </section>
+    <section id="sobreMim">
+        <div class="fora-container">
+            <div class="container3">
+                <h2>Desenvolvedora do Site</h2>
+                <div class="conteudo3">
+                    <div class="texto">
+                        <p>O <i><b>StreetWear</b></i> entrou na minha vida em 2020, durante a pandemia. Naquela época,
+                            eu
+                            estava no início do ensino médio e completamente isolada. Passei muito tempo no TikTok, uma
+                            plataforma que ganhou uma enorme popularidade durante a pandemia. Esse aplicativo tornou-se
+                            um
+                            grande influenciador de tendências de moda, com inúmeros criadores de conteúdo
+                            compartilhando
+                            dicas de estilo e inspirações diárias. Assistindo a esses conteúdos, fui mudando meu estilo
+                            e
+                            comecei a me sentir mais confortável e confiante. Isso não só transformou meu guarda-roupa,
+                            mas
+                            também elevou significativamente minha autoestima.
+                        </p>
+                        <p>
+                            O site “StreetWear”, tem como principal objetivo explorar as tendências mais populares na
+                            moda
+                            Street, proporcionando aos visitantes uma compreensão desse estilo que tanto gosto. Através
+                            de
+                            conteúdos cuidadosamente elaborados, busca informar e inspirar as pessoas, apresentando as
+                            mais
+                            recentes novidades e influências no mundo do streetwear e aumentar a visibilidade dos
+                            brechós,
+                            promovendo uma moda mais sustentável, dessa maneira incentivando os visitantes a
+                            considerarem a
+                            importância de práticas de consumo consciente e a adotarem opções de vestuário que
+                            contribuam
+                            para a preservação do meio ambiente, reforçando a ideia de que é possível estar na moda de
+                            maneira responsável.
+                        </p>
+                    </div>
+                    <div class="foto">
+                        <img src="./assets/eu.jpg">
+                    </div>
+                </div>
+            </div>
+        </div>
     </section>
 
-    <script>
-        var menubtn = document.querySelector(".menu-btn");
-        var navigation = document.querySelector(".navigation");
-        menubtn.addEventListener("click", () => {
-            menubtn.classList.toggle("active");
-            navigation.classList.toggle("active");
-        });
+    <section id="footer">
+        <div class="footer">
+            <div class="container">
+                <h4>Feito com amor by Bianca Rodrigues &hearts; 2024/1 &copy;</h4>
+            </div>
+        </div>
+    </section>
 
-        var btns = document.querySelectorAll(".nav-btn");
-        var slides = document.querySelectorAll(".video-slide");
-        var slidernav = function(manual){
-            btns.forEach((btn) =>{
-                btn.classList.remove("active");
-            });
-
-            slides.forEach((slide) =>{
-                slide.classList.remove("active");
-            });
-
-            btns[manual].classList.add("active");
-            slides[manual].classList.add("active");
-        }
-
-        btns.forEach((btn, i) => {
-            btn.addEventListener("click", () => {
-                slidernav(i);
-            });
-        });
-    </script>
-    
 </body>
+
 </html>
+<script>
+
+    ScrollReveal().reveal('.containerTit', {
+        duration: 1000,
+        opacity: 0,
+        distance: '100px',
+        origin: 'top',
+        interval: 200
+    })
+    ScrollReveal().reveal('.container', {
+        duration: 1000,
+        opacity: 0,
+        distance: '100px',
+        origin: 'top',
+        interval: 200
+    })
+    ScrollReveal().reveal('.titulo2', {
+        duration: 1000,
+        opacity: 0,
+        distance: '100px',
+        origin: 'left',
+        interval: 200
+    })
+    ScrollReveal().reveal('.conteudo', {
+        duration: 1000,
+        opacity: 0,
+        distance: '100px',
+        origin: 'right',
+        interval: 200
+    })
+    ScrollReveal().reveal('.card', {
+        duration: 1000,
+        opacity: 0,
+        distance: '100px',
+        origin: 'top',
+        interval: 200
+    })
+    ScrollReveal().reveal('.card2', {
+        duration: 1000,
+        opacity: 0,
+        distance: '100px',
+        origin: 'bottom',
+        interval: 200
+    })
+    ScrollReveal().reveal('.container2', {
+        duration: 1000,
+        opacity: 0,
+        distance: '100px',
+        origin: 'bottom',
+        interval: 200
+    })
+    ScrollReveal().reveal('.conteudo2', {
+        duration: 1000,
+        opacity: 0,
+        distance: '100px',
+        origin: 'left',
+        interval: 200
+    })
+    ScrollReveal().reveal('.cardM', {
+        duration: 1000,
+        opacity: 0,
+        distance: '100px',
+        origin: 'right',
+        interval: 200
+    })
+    ScrollReveal().reveal('.centralizadoT', {
+        duration: 1000,
+        opacity: 0,
+        distance: '100px',
+        origin: 'left',
+        interval: 200
+    })
+
+    function scrollToSection(sectionId) {
+        // aqui eu estou criando uma variavel onde ela vai ficar responsável por indentificar no HTML o section que eu quero
+        var section = document.getElementById(sectionId);
+        // aqui eu estou pedindo que para após encontrar que ele vá até ele de forma suave
+        section.scrollIntoView();
+    };
+
+    var slideIndex = 1;
+    showSlides(slideIndex);
+
+    
+    function plusSlides(n) {
+        showSlides(slideIndex += n);
+    }
+
+    
+    function currentSlide(n) {
+        showSlides(slideIndex = n);
+    }
+
+    function showSlides(n) {
+        var i;
+        var slides = document.getElementsByClassName("slider");
+        var dots = document.getElementsByClassName("dot");
+        if (n > slides.length) { slideIndex = 1 }
+        if (n < 1) { slideIndex = slides.length }
+        for (i = 0; i < slides.length; i++) {
+            slides[i].style.display = "none";
+        }
+        for (i = 0; i < dots.length; i++) {
+            dots[i].className = dots[i].className.replace(" active", "");
+        }
+        slides[slideIndex - 1].style.display = "block";
+        dots[slideIndex - 1].className += " active";
+    }
+
+    window.addEventListener('scroll', function () {
+        // Verifica se o usuário chegou ao final da página
+        if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
+            // Se chegou ao final, exibe um alerta
+            alert('Agora que você sabe mais sobre o assunto, e está por dentro das tendências, que tal se cadastrar para votar nos seus conjuntos favoritos?');
+        }
+    });
+
+
+</script>
