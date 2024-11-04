@@ -201,7 +201,7 @@ section {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #23334A;
+    background: #327fc0c9;
 }
 
 .wrapper {
@@ -426,6 +426,7 @@ section {
     max-width: 1180px;
     margin: 0 auto;
     background-color: black;
+    margin-top: 25px;
 }
 
 .conteudo3 {
