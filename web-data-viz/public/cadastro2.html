@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cadastro</title>
+  <link rel="stylesheet" href="./css/cadastro.css">
+</head>
+
+<body>
+
+  <div class="alerta_erro">
+    <div class="card_erro" id="cardErro">
+      <span id="mensagem_erro"></span>
+    </div>
+
+    <div class="containerInteiro">
+      <a href="./index.html" class="back"><img src="./assets/angle-left.png" width="30px" height="30px"></a>
+      <div class="container">
+
+        <h2 class="titulo">Cadastro</h2>
+
+        <span>
+          <input type="text" id="input_nome" placeholder="Nome" class="inputs">
+
+          <input type="text" id="input_sobrenome" placeholder="Sobrenome" class="inputs">
+        </span>
+        <br>
+        <span>
+          <input type="text" id="input_email" placeholder="Email" class="inputs">
+
+          <input type="text" id="input_tel" placeholder="Telefone" class="inputs">
+        </span>
+        <br>
+        <span>
+          <input type="password" id="input_senha" placeholder="Senha" class="inputs">
+
+          <input type="password" id="input_confirma" placeholder="Confirma Senha" class="inputs">
+        </span>
+        <br>
+        <button onclick="cadastrar()" class="botao">Cadastre-se</button>
+
+        <div id="div_aguardar" class="loading-div">
+          <img src="./assets/circle-loading.gif" height="30em" id="loading-gif" />
+        </div>
+
+        <div id="div_erros_login"></div>
+      </div>
+    </div>
+</body>
+
+</html>
+
+<script>
+  function cadastrar() {
+    
+    var nomeVar = input_nome.value;
+    var sobrenomeVar = input_sobrenome.value;
+    var emailVar = input_email.value;
+    var senhaVar = input_senha.value;
+    var confirmacaoSenhaVar = input_confirma.value;
+    var telefoneVar = Number(input_tel.value);
+
+
+    if (
+      nomeVar == "" ||
+      emailVar == "" ||
+      senhaVar == "" ||
+      confirmacaoSenhaVar == "" ||
+      telefoneVar == ""
+    ) {
+      cardErro.style.display = "block";
+      mensagem_erro.innerHTML =
+        "Preencha todos os campos em branco";
+
+      return false;
+    } if (nomeVar.length < 1) {
+      cardErro.style.display = "block";
+      mensagem_erro.innerHTML =
+        "Nome com pelo menos 1 caracter";
+
+      return false;
+    }
+    if (emailVar.indexOf("@") == '-1' || emailVar.indexOf(".") == "-1") {
+      cardErro.style.display = "block";
+      mensagem_erro.innerHTML =
+        "E-mail deve conter '@' e '.'";
+
+      return false;
+
+    }
+    if (senhaVar.length < 6) {
+      cardErro.style.display = "block";
+      mensagem_erro.innerHTML =
+        "Senha deve conter mais de 6 caracteres";
+
+      return false;
+
+    }
+    if (confirmacaoSenhaVar != senhaVar) {
+      cardErro.style.display = "block";
+      mensagem_erro.innerHTML =
+        "Senha deve ser igual";
+
+      return false;
+    }
+    if (telefoneVar.length >= 12) {
+      cardErro.style.display = "block";
+      mensagem_erro.innerHTML =
+        "Telefone deve conter 12 caracteres";
+
+      return false;
+    }
+
+    enviarDados(nomeVar, sobrenomeVar, telefoneVar, emailVar, senhaVar)
+
+  }
+
+  function enviarDados(nomeVar, sobrenomeVar, telefoneVar, emailVar, senhaVar) {
+    fetch("/usuarios/cadastrar", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        nomeServer: nomeVar,
+        sobrenomeServer: sobrenomeVar,
+        telefoneServer: telefoneVar,
+        emailServer: emailVar,
+        senhaServer: senhaVar
+      }),
+    })
+      .then(function (resposta) {
+        console.log("resposta: ", resposta);
+
+        if (resposta.ok) {
+          cardErro.style.display = "block";
+
+          mensagem_erro.innerHTML =
+            "Cadastro realizado com sucesso! Redirecionando para tela de Login...";
+
+          setTimeout(() => {
+            window.location = "./login2.html";
+          }, "1000");
+
+          limparFormulario();
+         
+        } else {
+          throw "Houve um erro ao tentar realizar o cadastro!";
+        }
+      })
+      .catch(function (resposta) {
+        console.log(`#ERRO: ${resposta}`);
+       
+      });
+
+
+
+    return false;
+  }
+
+
+  function sumirMensagem() {
+    cardErro.style.display = "none";
+  }
+</script>
