@@ -65,6 +65,7 @@
 
     if (
       nomeVar == "" ||
+      sobrenomeVar == "" ||
       emailVar == "" ||
       senhaVar == "" ||
       confirmacaoSenhaVar == "" ||
@@ -113,11 +114,11 @@
       return false;
     }
 
-    enviarDados(nomeVar, sobrenomeVar, telefoneVar, emailVar, senhaVar)
+    enviarDados(nomeVar, sobrenomeVar, telefoneVar, emailVar, senhaVar, confirmacaoSenhaVar)
 
   }
 
-  function enviarDados(nomeVar, sobrenomeVar, telefoneVar, emailVar, senhaVar) {
+  function enviarDados(nomeVar, sobrenomeVar, telefoneVar, emailVar, senhaVar, confirmacaoSenhaVar) {
     fetch("/usuarios/cadastrar", {
       method: "POST",
       headers: {
@@ -128,7 +129,8 @@
         sobrenomeServer: sobrenomeVar,
         telefoneServer: telefoneVar,
         emailServer: emailVar,
-        senhaServer: senhaVar
+        senhaServer: senhaVar,
+        confirmacaoSenhaServer: confirmacaoSenhaVar
       }),
     })
       .then(function (resposta) {
