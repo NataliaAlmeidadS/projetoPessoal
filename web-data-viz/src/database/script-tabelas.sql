@@ -12,37 +12,40 @@ senha varchar(45),
 confirmarSenha varchar(45)
 );
 
+CREATE TABLE livro (
+idLivro int primary key auto_increment,
+nome varchar(45));
 
+SELECT * FROM livro;
 
-create table votacao (
-idVoto int primary key auto_increment,
-qntdVoto int,
-comentarios varchar(45),
-dtHora datetime
-);
-
-create table metricas (
-idMetricas int primary key auto_increment,
+CREATE TABLE votacao (
+idVotacao int auto_increment,
 fkUsuario int,
-constraint fkUsuarioMetrica foreign key (fkUsuario) references usuario(idUsuario),
-fkVotacao int,
-constraint fkVotoMetrica foreign key (fkVotacao) references votacao(idVoto)
+fkLivro int,
+primary key (idVotacao, fkUsuario, fkLivro),
+foreign key (fkUsuario) 
+references usuario(idUsuario),
+foreign key (fkLivro)
+references livro(idLivro),
+dataHora DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
-create table livro (
-idLivro int primary key,
-nomeLivro varchar(45)
-);
 
-ALTER TABLE metricas ADD COLUMN fkLivro INT, 
-ADD CONSTRAINT fkLivroMetrica FOREIGN KEY (fkLivro) REFERENCES livro(idLivro);
 
-select * from usuario where email;
+
+INSERT INTO livro(nome) VALUES
+('Livro1'),
+('Livro2'),
+('Livro3'),
+('Livro4');
+
 
 select * from livro;
 select * from usuario;
 select * from votacao;
-select * from metricas;
+
+
+
 
 insert into usuario values 
 (default, 'natalia', 'souza', '11958706277','natalia@souza.com', 'Na1234.5', 'Na1234.5');

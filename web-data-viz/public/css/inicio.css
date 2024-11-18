@@ -141,14 +141,15 @@ section {
 
 .sobre {
     background-color: #DEDAD5;
-    background-image: url(../assets/Component\ 1.png);
+    background-image: url(../assets/atuacao.png); 
+    background-size: 200px 212px;
     background-repeat: no-repeat;
     display: flex;
     justify-content: start;
     height: 500px;
     margin: 0 auto;
     padding: 0;
-    background-position:  50px; /* Ajusta a posição da imagem */
+    background-position: 270px;
 
 
 }
@@ -201,7 +202,7 @@ section {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #327fc0c9;
+    background: #7098bac9;
 }
 
 .wrapper {
@@ -440,6 +441,7 @@ section {
     flex: 1;
     text-align: left;
     padding-right: 20px;
+    font-size: 20px;
 }
 
 .foto {
@@ -447,7 +449,7 @@ section {
 }
 
 .foto img {
-    width: 250px;
+    width: 280px;
     height: auto;
     border-radius: 10px;
 }

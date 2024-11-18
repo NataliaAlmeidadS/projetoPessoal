@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Votação</title>
+    <link rel="stylesheet" href="./css/votacao.css">
+    <!-- <script src="../public/js/sessao.js"></script> -->
+</head>
+
+<body>
+    <section id="votacao">
+        <div class="header">
+            <div class="containerTit">
+                <a href="./index.html">
+                    <h1 class="titulo">Inner</h1>
+                    <div>
+                        <h2 class="titulo2">Guide</h2>
+                    </div>
+                </a>
+            </div>
+            <div class="container">
+                <ul class="navbar">
+                    <a href="./index.html">
+                        <li>Home</li>
+                    </a>
+                    <a href="#votacao">
+                        <li>Votação</li>
+                    </a>
+                    <a href="./dash.html">
+                        <li>Dashboard</li>
+                    </a>
+
+                    <div class="divLC">
+                        Olá,<span id="b_usuario">usuário</span>!
+                    </div>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section id="votacao">
+        <div class="container2">
+            <div class="conteudo">
+                <h1>Escolha seu livro favorito</h1>
+                <div class="nav-botao">
+                    <button onclick="blá()" id="FemBtn" class="btn white-btn">Blá</button>
+                    <button onclick="blé()" id="MascBtn" class="btn">Blé</button>
+                </div>
+
+                <ul class="slider">
+
+                    <div class="imagens">
+                    
+                        <li id="femininos">
+                            <div class="card">
+                                <img onclick="selecionarconjunto('livro1')" id="img1" src="./assets/livro1.jpg">
+                                <span><b>Livro 1</b></span>
+                            </div>
+
+                            <div class="card">
+                                <img onclick="selecionarconjunto('livro2')" id="img2" src="./assets/livro2.jpg">
+                                <span><b>Livro 2</b></span>
+                            </div>
+
+                            <div class="card">
+                                <img onclick="selecionarconjunto('livro3')" id="img3" src="./assets/livro3.jpg">
+                                <span><b>Livro 3</b></span>
+                            </div>
+
+                            <div class="card">
+                                <img onclick="selecionarconjunto('livro4')" id="img4" src="./assets/livro4.jpg">
+                                <span><b>Livro 4</b></span>
+                            </div>
+
+                           
+                        </li>
+                       
+                    </div>
+                    <div class="divBtn">
+                        <button class="botao" id="btnVotar" onclick="cadastrarLivro()"
+                            style="display: none;">Votar</button>
+                    </div>
+            </div>
+            </ul>
+        </div>
+    </section>
+</body>
+
+</html>
+<script>
+    b_usuario.innerHTML = sessionStorage.NOME_USUARIO;
+
+
+
+    var LivroEscolhido = "";
+    function selecionarconjunto(livro) {
+
+
+        if (livro == 'livro1') {
+            btnVotar.style.display = 'block'
+
+            img1.style.height = '290px'
+            img1.style.border = '5px solid black'
+            img2.style = 'none'
+            img3.style = 'none'
+            img4.style = 'none'
+            
+            livroEscolhido = 1
+        }
+        else if (livro == 'livro2') {
+            btnVotar.style.display = 'block'
+            img1.style = 'none'
+            img3.style = 'none'
+            img4.style = 'none'
+            
+
+            img2.style.height = '290px'
+            img2.style.border = '5px solid black'
+            livroEscolhido  = 2
+        }
+
+        else if (livro == 'livro3') {
+            btnVotar.style.display = 'block'
+            img1.style = 'none'
+            img2.style = 'none'
+            img4.style = 'none'
+            
+            img3.style.height = '290px'
+            img3.style.border = '5px solid black'
+            livroEscolhido = 3
+        }
+        else if (livro == 'livro4') {
+            btnVotar.style.display = 'block'
+            img1.style = 'none'
+            img2.style = 'none'
+            img3.style = 'none'
+            
+            img4.style.height = '290px'
+            img4.style.border = '5px solid black'
+            livroEscolhido = 4
+        }
+
+        
+    }
+    function cadastrarLivro() {
+        var idusuario = sessionStorage.ID_USUARIO;
+
+        // Enviando o valor da nova input
+        fetch(`/livro/cadastrarLivro`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                idusuario: idusuario,
+                livroEscolhido: livroEscolhido
+            })
+        }).then(function (resposta) {
+
+            console.log("resposta: ", resposta);
+
+            if (resposta.ok) {
+                window.alert("Seu livro foi cadastrado com sucesso!");
+                window.location.href = "dash.html"
+
+            } else {
+                throw ("Houve um erro ao tentar realizar o cadastro!");
+            }
+        }).catch(function (resposta) {
+            console.log(`#ERRO: ${resposta}`);
+
+        });
+    }
+    function validarSessao() {
+    var email = sessionStorage.EMAIL_USUARIO;
+    var nome = sessionStorage.NOME_USUARIO;
+
+    var nome = document.getElementById("b_usuario");
+
+    if (email != null && nome != null) {
+        b_usuario.innerHTML = nome;
+    } else {
+        window.location = "../login2.html";
+    }
+}
+
+    function blá() {
+        var f = document.getElementById("FemBtn").classList.add("white-btn")
+        var m = document.getElementById("MascBtn").classList.remove("white-btn")
+        var fem = document.getElementById("femininos").style.display = "flex"
+        var masc = document.getElementById("masculinos").style.display = "none"
+        fem.style.left = "50px";
+        masc.style.right = "-1000px";
+        f.className += " white-btn";
+        m.className = "btn";
+        fem.style.opacity = 1;
+        masc.style.opacity = 0;
+
+    }
+        function blé() {
+            var f = document.getElementById("FemBtn").classList.remove("white-btn")
+            var m = document.getElementById("MascBtn").classList.add("white-btn")
+            var fem = document.getElementById("femininos").style.display = "none"
+            var masc = document.getElementById("masculinos").style.display = "flex"
+            fem.style.left = "-1000px";
+            masc.style.right = "65px";
+            f.className += " btn";
+            m.className = " white-btn";
+            fem.style.opacity = 0;
+            masc.style.opacity = 1;
+
+        }
+</script>
