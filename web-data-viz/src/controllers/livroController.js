@@ -23,6 +23,23 @@ function cadastrarLivro(req, res) {
         });
 }
 
+function buscarConjuntosVotados(req, res) {
+    usuarioModel.buscarConjuntosVotados()
+        .then(function (resultado) {
+            if (resultado.length > 0) {
+                res.status(200).json(resultado);
+                
+            } else {
+                res.status(204).send("Nenhum resultado encontrado!");
+            }
+        })
+        .catch(function (erro) { // Alterado de error para erro
+            console.error('Erro ao buscar os conjuntos votados:', erro); // Alterado de error para erro
+            res.status(500).json({ error: 'Erro ao buscar os conjuntos votados' });
+        });
+}
+
+
 module.exports = {
-    cadastrarLivro
+    cadastrarLivro,
 };

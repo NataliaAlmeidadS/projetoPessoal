@@ -39,9 +39,9 @@ function buscarConjuntosVotados() {
     // Executar a instrução SQL e retornar os resultados
     return database.executar(instrucaoSql);
 }
-function totalDeVotos() {
+function totalDeVotos(idUser) {
     var instrucaoSql = `
-            SELECT count(idVotacao) AS totalVotos FROM votacao;
+              SELECT count(idVotacao) AS totalVotos FROM votacao where fkUsuario = ${idUser}
         `;
     console.log("Executando a instrução SQL: \n" + instrucaoSql);
     return database.executar(instrucaoSql);

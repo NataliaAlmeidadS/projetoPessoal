@@ -85,9 +85,9 @@ function cadastrar(req, res) {
                 }
             );
     }
-    
+}
 function buscarConjuntosVotados(req, res) {
-    usuarioModel.buscarConjuntosVotados(req)
+    usuarioModel.buscarConjuntosVotados()
         .then(function (resultado) {
             if (resultado.length > 0) {
                 res.status(200).json(resultado);
@@ -104,7 +104,7 @@ function buscarConjuntosVotados(req, res) {
 
 function obterTotalVotos(req, res) {
     var dadosGrafico = {};
-
+    var idUser = req.params.idUser
     usuarioModel.totalDeVotos(req)
         .then(function (resultado) {
             dadosGrafico.totalVotos = resultado[0].totalVotos;
@@ -130,7 +130,6 @@ function getKpi(req, res) {
         });
 }
 
-}
 
 module.exports = {
     autenticar,
@@ -138,5 +137,5 @@ module.exports = {
     buscarConjuntosVotados,
     obterTotalVotos,
     getKpi
-
 }
+
