@@ -21,8 +21,43 @@ function cadastrar( nome, sobrenome, telefone, email, senha, confirmarSenha) {
     console.log("Executando a instrução SQL: \n" + instrucaoSql);
     return database.executar(instrucaoSql);
 }
+function buscarConjuntosVotados() {
+    // Define a instrução SQL para selecionar os conjuntos de roupas mais votados
+    var instrucaoSql = `
+            SELECT 
+ livro.nome as 'Livro Escolhido',
+ count(idVotacao) as 'Livro Vencedor'
+ FROM votacao 
+ JOIN livro
+ ON fkLivro = idLivro
+ group by  livro.nome;
+        `;
+
+    // Log da instrução SQL (opcional)
+    console.log("Executando a instrução SQL: \n" + instrucaoSql);
+
+    // Executar a instrução SQL e retornar os resultados
+    return database.executar(instrucaoSql);
+}
+function totalDeVotos() {
+    var instrucaoSql = `
+            SELECT count(idVotacao) AS totalVotos FROM votacao;
+        `;
+    console.log("Executando a instrução SQL: \n" + instrucaoSql);
+    return database.executar(instrucaoSql);
+}
+function getKpi(idUser) {
+    var instrucaoSql = `
+            select count(u.nome) as qtd from usuario u left join votacao v on u.idUsuario = v.fkUsuario where u.idUsuario = ${idUser};
+        `
+    console.log("Executando a instrução SQL: \n" + instrucaoSql);
+    return database.executar(instrucaoSql);
+}
 
 module.exports = {
     autenticar,
-    cadastrar
+    cadastrar,
+    buscarConjuntosVotados,
+    totalDeVotos,
+    getKpi
 };

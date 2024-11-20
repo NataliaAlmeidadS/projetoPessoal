@@ -85,9 +85,58 @@ function cadastrar(req, res) {
                 }
             );
     }
+    
+function buscarConjuntosVotados(req, res) {
+    usuarioModel.buscarConjuntosVotados(req)
+        .then(function (resultado) {
+            if (resultado.length > 0) {
+                res.status(200).json(resultado);
+                
+            } else {
+                res.status(204).send("Nenhum resultado encontrado!");
+            }
+        })
+        .catch(function (erro) { // Alterado de error para erro
+            console.error('Erro ao buscar os conjuntos votados:', erro); // Alterado de error para erro
+            res.status(500).json({ error: 'Erro ao buscar os conjuntos votados' });
+        });
+}
+
+function obterTotalVotos(req, res) {
+    var dadosGrafico = {};
+
+    usuarioModel.totalDeVotos(req)
+        .then(function (resultado) {
+            dadosGrafico.totalVotos = resultado[0].totalVotos;
+            return usuarioModel.totalDeVotos(req);
+        })
+
+        .catch(function (erro) {
+            console.log('Erro ao obter total de votos:', erro);
+            res.status(500).json(erro);
+        });
+}
+
+function getKpi(req, res) {
+    var idUser = req.params.idUser;
+
+    usuarioModel.getKpi(idUser)
+        .then(function (resultado) {
+            if (resultado.length > 0) {
+                res.status(200).json(resultado);
+            } else {
+                res.status(204).send("Nenhum resultado encontrado!");
+            }
+        });
+}
+
 }
 
 module.exports = {
     autenticar,
-    cadastrar
+    cadastrar,
+    buscarConjuntosVotados,
+    obterTotalVotos,
+    getKpi
+
 }

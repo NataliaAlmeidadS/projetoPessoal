@@ -30,9 +30,8 @@
           <a href="#dash">
             <li>Dashboard</li>
           </a>
-
           <div class="divLC">
-            Olá,<span id="b_usuario">usuário</span>!
+            Olá, <span id="b_usuario">usuário</span>!
           </div>
         </ul>
       </div>
@@ -55,143 +54,119 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script>
-      b_usuario.innerHTML = sessionStorage.NOME_USUARIO;
-      p_usuario.innerHTML = sessionStorage.NOME_USUARIO;
-      
+      // Validação da sessão
+      function validarSessao() {
+        const email = sessionStorage.EMAIL_USUARIO;
+        const nome = sessionStorage.NOME_USUARIO;
+
+        if (!email || !nome) {
+          alert("Sessão inválida! Faça login novamente.");
+          window.location = "./login.html";
+        } else {
+          document.getElementById("b_usuario").innerHTML = nome;
+          document.getElementById("p_usuario").innerHTML = nome;
+        }
+      }
+
+      validarSessao();
+
       document.addEventListener("DOMContentLoaded", function () {
+        // Gráfico 1 (barra)
         const ctx = document.getElementById('myChart').getContext('2d');
 
         fetch('/usuarios/dados-dashboard')
           .then(response => {
-            if (!response.ok) {
-              throw new Error('Erro ao obter os dados do servidor');
-            }
+            if (!response.ok) throw new Error('Erro ao obter os dados do servidor');
             return response.json();
           })
           .then(data => {
-            console.log('Dados recebidos do servidor:', data);
+            if (!Array.isArray(data) || data.length === 0) throw new Error("Dados inválidos ou vazios.");
 
-            
             const determineColor = (label) => {
-              
-              if (label.startsWith('M')) {
-                return 'rgba(54, 162, 235, 0.2)'; // Cor para conjuntos masculinos
-              } else {
-                return 'rgba(255, 99, 132, 0.2)'; // Cor para conjuntos femininos
-              }
+              return label.startsWith('M')
+                ? 'rgba(54, 162, 235, 0.2)'
+                : 'rgba(255, 99, 132, 0.2)';
             };
 
             new Chart(ctx, {
               type: 'bar',
               data: {
-                labels: data.map(item => item['Conjunto Escolhido']),
+                labels: data.map(item => item['Livro Escolhido']),
                 datasets: [{
                   label: 'Ranking',
-                  data: data.map(item => item['Conjunto Vencedor']),
-                  backgroundColor: data.map(item => determineColor(item['Conjunto Escolhido'])),
-                  borderColor: data.map(item => determineColor(item['Conjunto Escolhido']).replace('0.2', '1')), // Aumenta a opacidade para a borda
+                  data: data.map(item => item['Livro Vencedor']),
+                  backgroundColor: data.map(item => determineColor(item['Livro Escolhido'])),
+                  borderColor: data.map(item => determineColor(item['Livro Escolhido']).replace('0.2', '1')),
                   borderWidth: 1
                 }]
               },
               options: {
                 scales: {
                   y: {
-                    ticks: {
-                      color: 'white'
-                    },
+                    ticks: { color: 'white' },
                     beginAtZero: true
                   },
                   x: {
-                    ticks: {
-                      color: 'white'
-                    }
+                    ticks: { color: 'white' }
                   }
                 },
                 plugins: {
                   legend: {
-                    labels: {
-                      color: 'white'
-                    }
+                    labels: { color: 'white' }
                   }
                 }
               }
             });
           })
-          .catch(error => {
-            console.error('Erro ao obter os dados:', error);
-          });
-      });
+          .catch(error => console.error('Erro ao obter os dados:', error));
 
-      document.addEventListener('DOMContentLoaded', function () {
+        // Gráfico 2 (rosca)
         const ctx2 = document.getElementById('myChart2').getContext('2d');
 
         fetch('/usuarios/dados-grafico2')
           .then(response => {
-            if (!response.ok) {
-              throw new Error('Erro ao obter os dados do servidor');
-            }
+            if (!response.ok) throw new Error('Erro ao obter os dados do servidor');
             return response.json();
           })
           .then(data => {
-            console.log('Dados recebidos do servidor:', data);
-
-            const myChart2 = new Chart(ctx2, {
+            new Chart(ctx2, {
               type: 'doughnut',
               data: {
-                labels: ['Total de Votos', 'Feminino', 'Masculino'],
+                labels: ['Total de Votos'],
                 datasets: [{
-                  label: 'Total de votos',
-                  data: [data.totalVotos, data.totalVotosFemininos, data.totalVotosMasculinos],
+                  data: [data.totalVotos],
                   backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'],
                   borderWidth: 1
                 }]
               },
               options: {
-                scales: {
-                  y: {
-                    ticks: {
-                      color: 'white'
-                    },
-                    beginAtZero: true,
-                    display: false,
-                  },
-                  x: {
-                    ticks: {
-                      color: 'white'
-                    },
-                    display: false,
-                  }
-                },
                 plugins: {
                   legend: {
-                    labels: {
-                      color: 'white'
-                    }
+                    labels: { color: 'white' }
                   }
                 }
               }
             });
           })
-          .catch(error => console.error('Erro ao obter dados do gráfico:', error));
-      });
+          .catch(error => console.error('Erro ao obter dados do gráfico 2:', error));
 
-      var idUser = sessionStorage.ID_USUARIO;
+        // KPI (indicador principal)
+        const idUser = sessionStorage.ID_USUARIO;
 
-      document.addEventListener('DOMContentLoaded', function () {
         fetch(`/usuarios/kpi/${idUser}`)
           .then(response => {
-            if (!response.ok) {
-              throw new Error('Erro ao obter os dados do servidor');
-            }
+            if (!response.ok) throw new Error('Erro ao obter os dados do servidor');
             return response.json();
           })
           .then(data => {
-            console.log(data)
-            kpi_value.innerHTML = data[0].qtd;
+            if (data.length > 0) {
+              document.getElementById("kpi_value").innerHTML = data[0].qtd;
+            } else {
+              document.getElementById("kpi_value").innerHTML = "N/A";
+            }
           })
-          .catch(error => console.error('Erro ao obter dados da kpi:', error));
+          .catch(error => console.error('Erro ao obter dados da KPI:', error));
       });
-
     </script>
   </section>
 </body>

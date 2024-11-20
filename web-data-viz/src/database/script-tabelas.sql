@@ -44,8 +44,18 @@ select * from livro;
 select * from usuario;
 select * from votacao;
 
+ SELECT 
+ livro.nome as 'Livro Escolhido',
+ count(idVotacao) as 'Livro Vencedor'
+ FROM votacao 
+ JOIN livro
+ ON fkLivro = idLivro
+ group by  livro.nome;
 
 
+ SELECT count(idVotacao) AS totalVotos FROM votacao;
+
+  select count(u.nome) as qtd from usuario u left join votacao v on u.idUser = v.fkUsuario where u.idUsuario
 
 insert into usuario values 
 (default, 'natalia', 'souza', '11958706277','natalia@souza.com', 'Na1234.5', 'Na1234.5');

@@ -12,4 +12,17 @@ router.post("/autenticar", function (req, res) {
     usuarioController.autenticar(req, res);
 });
 
+// Ajuste a rota para "/dados-dashboard"
+router.get("/dados-dashboard", function (req, res) {
+    usuarioController.buscarConjuntosVotados(req, res);
+});
+
+router.get("/dados-grafico2", function (req, res) {
+    usuarioController.obterTotalVotos(req, res);
+})
+
+router.get("/kpi/:idUser", function (req, res) {
+    usuarioController.getKpi(req, res);
+});
+
 module.exports = router;
