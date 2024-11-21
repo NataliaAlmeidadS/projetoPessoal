@@ -17,11 +17,16 @@ router.get("/dados-dashboard", function (req, res) {
     usuarioController.buscarConjuntosVotados(req, res);
 });
 
-router.get("/dados-grafico2/:idUser", function (req, res) {
-    usuarioController.obterTotalVotos(req, res);
-})
 
-router.get("/kpi/:idUser", function (req, res) {
+router.get("/dados-grafico2", function (req, res) {
+    usuarioController.obterTotalVotos(req, res);
+});
+
+router.get("/votacaoIndividual", function (req, res) {
+    usuarioController.obterTotalVotosIndividual(req, res);
+});
+
+router.get("/kpi", function (req, res) {
     usuarioController.getKpi(req, res);
 });
 

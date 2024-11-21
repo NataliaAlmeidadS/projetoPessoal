@@ -31,8 +31,6 @@ dataHora DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
 
-
-
 INSERT INTO livro(nome) VALUES
 ('Livro1'),
 ('Livro2'),
@@ -44,8 +42,36 @@ select * from livro;
 select * from usuario;
 select * from votacao;
 
+ SELECT 
+ livro.nome as 'Livro Escolhido',
+ count(idVotacao) as 'Livro Vencedor'
+ FROM votacao 
+ JOIN livro
+ ON fkLivro = idLivro
+ group by  livro.nome;
+
+SELECT 
+    usuario.idUsuario AS idUser,
+    votacao.fkLivro, 
+    votacao.dataHora
+FROM 
+    votacao
+JOIN 
+    usuario ON votacao.fkUsuario = usuario.idUsuario
+WHERE 
+    usuario.idUsuario = (SELECT MAX(idUsuario) FROM usuario) 
+ORDER BY 
+    votacao.dataHora DESC;
 
 
+--  SELECT count(idVotacao) AS totalVotos FROM votacao;
+   
+
+  select count(u.nome) as qtd from usuario u left join votacao v on u.idUsuario = v.fkUsuario where u.idUsuario;
+  
+  select count(u.nome) as qtd from usuario u left join votacao v on u.idUsuario = v.fkUsuario where u.idUsuario = 4;
 
 insert into usuario values 
 (default, 'natalia', 'souza', '11958706277','natalia@souza.com', 'Na1234.5', 'Na1234.5');
+
+    

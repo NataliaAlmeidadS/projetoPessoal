@@ -86,26 +86,29 @@ function cadastrar(req, res) {
             );
     }
 }
-function buscarConjuntosVotados(req, res) {
+
+function buscarConjuntosVotados(req, res) { 
     usuarioModel.buscarConjuntosVotados()
         .then(function (resultado) {
-            if (resultado.length > 0) {
+            console.log(resultado);  // Para depurar e verificar o que está sendo retornado
+            if (Array.isArray(resultado) && resultado.length > 0) {
                 res.status(200).json(resultado);
-                
             } else {
                 res.status(204).send("Nenhum resultado encontrado!");
             }
         })
-        .catch(function (erro) { // Alterado de error para erro
-            console.error('Erro ao buscar os conjuntos votados:', erro); // Alterado de error para erro
-            res.status(500).json({ error: 'Erro ao buscar os conjuntos votados' });
+        .catch(function (erro) {
+            console.error('Erro ao buscar os conjuntos votados:', erro);
+            res.status(500).json({ error: 'Erro ao buscar os conjuntos votados', details: erro.message });
         });
 }
 
+
 function obterTotalVotos(req, res) {
     var dadosGrafico = {};
-    var idUser = req.params.idUser
-    usuarioModel.totalDeVotos(req)
+    var idUser = req.params.idUser;
+
+    usuarioModel.totalDeVotos(idUser)
         .then(function (resultado) {
             dadosGrafico.totalVotos = resultado[0].totalVotos;
             return usuarioModel.totalDeVotos(req);
@@ -117,17 +120,33 @@ function obterTotalVotos(req, res) {
         });
 }
 
-function getKpi(req, res) {
+function obterTotalVotosIndividual(req, res) {
+    var dadosGrafico2 = {};
     var idUser = req.params.idUser;
 
-    usuarioModel.getKpi(idUser)
+    usuarioModel.totalDeVotosIndividual(idUser)
         .then(function (resultado) {
-            if (resultado.length > 0) {
-                res.status(200).json(resultado);
-            } else {
-                res.status(204).send("Nenhum resultado encontrado!");
-            }
+            dadosGrafico2.totalVotos = resultado[0].totalVotos;
+            return usuarioModel.totalDeVotosIndividual(req);
+        })
+
+        .catch(function (erro) {
+            console.log('Erro ao obter total de votos:', erro);
+            res.status(500).json(erro);
         });
+}
+
+function getKpi(req, res) {
+    var idUser = req.query.parametro;
+        usuarioModel.getKpi(idUser).then(resultado => {
+            res.json(resultado)
+        }).catch(
+            function (erro) {
+                console.log(erro);
+                console.log("Houve um erro ao buscar as estatisticas", erro.sqlMessage);
+                res.status(500).json(erro.sqlMessage);
+            }
+        );
 }
 
 
@@ -136,6 +155,7 @@ module.exports = {
     cadastrar,
     buscarConjuntosVotados,
     obterTotalVotos,
-    getKpi
+    getKpi,
+    obterTotalVotosIndividual
 }
 

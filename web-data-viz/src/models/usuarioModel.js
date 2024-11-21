@@ -10,9 +10,9 @@ function autenticar(email, senha) {
 }
 
 // Coloque os mesmos parâmetros aqui. Vá para a var instrucaoSql
-function cadastrar( nome, sobrenome, telefone, email, senha, confirmarSenha) {
-    console.log("ACESSEI O USUARIO MODEL \n \n\t\t >> Se aqui der erro de 'Error: connect ECONNREFUSED',\n \t\t >> verifique suas credenciais de acesso ao banco\n \t\t >> e se o servidor de seu BD está rodando corretamente. \n\n function cadastrar():",  nome, sobrenome ,telefone, email, senha, confirmarSenha);
-    
+function cadastrar(nome, sobrenome, telefone, email, senha, confirmarSenha) {
+    console.log("ACESSEI O USUARIO MODEL \n \n\t\t >> Se aqui der erro de 'Error: connect ECONNREFUSED',\n \t\t >> verifique suas credenciais de acesso ao banco\n \t\t >> e se o servidor de seu BD está rodando corretamente. \n\n function cadastrar():", nome, sobrenome, telefone, email, senha, confirmarSenha);
+
     // Insira exatamente a query do banco aqui, lembrando da nomenclatura exata nos valores
     //  e na ordem de inserção dos dados.
     var instrucaoSql = `
@@ -41,23 +41,64 @@ function buscarConjuntosVotados() {
 }
 function totalDeVotos(idUser) {
     var instrucaoSql = `
-              SELECT count(idVotacao) AS totalVotos FROM votacao where fkUsuario = ${idUser}
+             SELECT 
+    usuario.idUsuario AS idUser,
+    votacao.fkLivro, 
+    votacao.dataHora
+FROM 
+    votacao
+JOIN 
+    usuario ON votacao.fkUsuario = usuario.idUsuario
+WHERE 
+    usuario.idUsuario = (SELECT MAX(idUsuario) FROM usuario) 
+ORDER BY 
+    votacao.dataHora DESC;
         `;
     console.log("Executando a instrução SQL: \n" + instrucaoSql);
     return database.executar(instrucaoSql);
 }
-function getKpi(idUser) {
+
+function totalDeVotosIndividual(idUser) {
     var instrucaoSql = `
-            select count(u.nome) as qtd from usuario u left join votacao v on u.idUsuario = v.fkUsuario where u.idUsuario = ${idUser};
-        `
+             SELECT 
+    usuario.idUsuario AS idUser,
+    votacao.fkLivro, 
+    votacao.dataHora
+FROM 
+    votacao
+JOIN 
+    usuario ON votacao.fkUsuario = ${4}
+WHERE 
+    usuario.idUsuario = (SELECT MAX(idUsuario) FROM usuario) 
+ORDER BY 
+    votacao.dataHora DESC;
+        `;
     console.log("Executando a instrução SQL: \n" + instrucaoSql);
     return database.executar(instrucaoSql);
 }
+
+function getKpi(idUser) {
+    var instrucaoSql = `
+        SELECT COUNT(*) AS qtd 
+        FROM votacao 
+        WHERE fkUsuario = ${idUser};
+    `;
+    console.log("Executando a instrução SQL: \n" + instrucaoSql);
+    return database.executar(instrucaoSql).then((resultado) => {
+        if (resultado.length > 0 && resultado[0].qtd !== undefined) {
+            return resultado[0].qtd; // Retorna apenas o número de votos
+        } else {
+            return 0; // Nenhum resultado encontrado
+        }
+    });
+}
+
 
 module.exports = {
     autenticar,
     cadastrar,
     buscarConjuntosVotados,
     totalDeVotos,
-    getKpi
+    getKpi,
+    totalDeVotosIndividual
 };
