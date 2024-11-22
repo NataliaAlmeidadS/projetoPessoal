@@ -121,13 +121,12 @@ function obterTotalVotos(req, res) {
 }
 
 function obterTotalVotosIndividual(req, res) {
-    var dadosGrafico2 = {};
     var idUser = req.params.idUser;
 
+  
     usuarioModel.totalDeVotosIndividual(idUser)
         .then(function (resultado) {
-            dadosGrafico2.totalVotos = resultado[0].totalVotos;
-            return usuarioModel.totalDeVotosIndividual(req);
+            res.json(resultado);
         })
 
         .catch(function (erro) {

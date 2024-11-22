@@ -60,18 +60,25 @@ ORDER BY
 
 function totalDeVotosIndividual(idUser) {
     var instrucaoSql = `
-             SELECT 
-    usuario.idUsuario AS idUser,
-    votacao.fkLivro, 
-    votacao.dataHora
+        SELECT 
+    livro.nome,
+    MAX(usuario.idUsuario) AS idUser,
+    COUNT(votacao.fkLivro) AS qtdVotos,
+    MAX(votacao.dataHora) AS dataHora
 FROM 
     votacao
 JOIN 
-    usuario ON votacao.fkUsuario = ${4}
+    usuario ON votacao.fkUsuario = usuario.idUsuario
+JOIN 
+    livro ON votacao.fkLivro = livro.idLivro
 WHERE 
-    usuario.idUsuario = (SELECT MAX(idUsuario) FROM usuario) 
+    usuario.idUsuario = (SELECT MAX(idUsuario) FROM usuario)
+    AND
+    votacao.fkUsuario = ${idUser}
+GROUP BY 
+    livro.nome, votacao.fkLivro
 ORDER BY 
-    votacao.dataHora DESC;
+    qtdVotos DESC;
         `;
     console.log("Executando a instrução SQL: \n" + instrucaoSql);
     return database.executar(instrucaoSql);
