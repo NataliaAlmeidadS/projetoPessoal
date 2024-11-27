@@ -1,3 +1,4 @@
+/* Estilo Geral */
 body {
     margin: 0;
     padding: 0;
@@ -5,125 +6,97 @@ body {
     background-image: url(../assets/pratileiras-livro.jpg);
     background-repeat: no-repeat;
     background-size: cover;
-    height: 100%;
-}
-
-.containerInteiro {
-    background-color: #afceddc0;
-    height: 480px;
-    width: 660px;
-    border-radius: 18px;
-    border: 2px solid #4682b4;
-    margin: 5% auto 5% auto;
-}
-
-.container {
+    height: 100vh;
+    font-family: Arial, sans-serif;
     display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
-    text-align: center;
-
-}
-
-.container .titulo {
+  }
+  
+  /* Card Principal */
+  .containerInteiro {
+    background-color: rgba(175, 206, 221, 0.9);
+    padding: 20px;
+    width: 128%;
+    margin-left: -96px;
+    height: 52%;
+    align-items: center;
+    border-radius: 18px;
+    border: 2px solid #4682b4;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* Título */
+  .titulo {
     font-size: 30px;
     font-family: "Brawler", serif;
     font-weight: 850;
-    font-style: normal;
-    margin-top: 52.5px;
-}
-
-.titulo{
-    margin-top: 20px;
-}
-
-.brawler-regular {
-    font-family: "Brawler", serif;
-    font-weight: 400;
-    font-style: normal;
-}
-
-.inputs {
+    text-align: center;
+  }
+  
+  /* Formulário com duas colunas */
+  .formulario {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+  }
+  
+  /* Campos individuais */
+  .input-container {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 calc(50% - 20px);
+    max-width: 300px;
+  }
+  
+  .inputs {
     border-radius: 10px;
-    border: none;
+    border: 1px solid gray;
     text-align: center;
     height: 40px;
     width: 250px;
     margin-bottom: 10px;
-}
-
-.botao {
-    border-radius: 15px;
+    transition: border-color 0.3s ease;
+  }
+  
+  .inputs.valid {
+    border-color: green;
+  }
+  
+  .inputs.invalid {
+    border-color: red;
+  }
+  
+  /* Contêiner de senha */
+  .senha-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  
+  /* Botão */
+  .botao {
+    border-radius: 8px;
     height: 40px;
-    width: 150px;
+    width: 161px;
+    margin-left: 50px;
     border: none;
     background-color: #4682b4;
     color: white;
-    font-size: 22px;
+    align-items: center;
+    font-size: 25px;
     font-family: "Brawler", serif;
     font-weight: 800;
-    font-style: normal;
-    box-shadow: 4px 5px 0px #033158;
-
-}
-
-.container p {
-    font-size: 15px;
-    font-family: "Brawler", serif;
-    font-weight: 800;
-    font-style: normal;
-}
-
-.container a {
-    text-decoration: none;
-    color: #4682b4;
-}
-
-.back {
-    width: 30px;
-    position: relative;
-    top: 5%;
-    left: 3%;
-}
-
-.botao a{
-    text-decoration: none;
-    color: white;
-}
-
-.loading-div {
-    width: 50px;
-    display: none;
+    cursor: pointer;
+    margin: 20px auto;
+    transition: background-color 0.3s;
   }
   
-  .loading-div img {
-    height: 50px;
-    width: 50px;
+  .botao:hover {
+    background-color: #0056b3;
   }
   
-  #div_erros_login {
-    display: none
-  }
-
-  .alerta_erro{
-    display: flex;
-    justify-content: flex-end;
-  }
-  
-  .card_erro {
-    display: none;
-    background-color: #fff;
-    color: black;
-    width: 230px;
-    position: fixed;
-    border-radius: 4px;
-    border: #C1AAAA 3px solid;
-    padding: 10px;
-    margin-right: 10%;
-  }
-  
-  .card_erro #mensagem_erro{
-    font-weight: 500;
-    font-size: 20px;
-  }

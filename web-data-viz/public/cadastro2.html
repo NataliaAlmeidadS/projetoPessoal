@@ -23,147 +23,200 @@
 
         <span>
           <input type="text" id="input_nome" placeholder="Nome" class="inputs">
-
           <input type="text" id="input_sobrenome" placeholder="Sobrenome" class="inputs">
         </span>
         <br>
         <span>
-          <input type="text" id="input_email" placeholder="Email" class="inputs">
-
-          <input type="text" id="input_tel" placeholder="Telefone" class="inputs">
+          <input type="text" id="input_email" placeholder="Email" class="inputs" oninput="validarEmail()">
+          <input type="text" id="input_tel" placeholder="Telefone" class="inputs" oninput="validarTelefone()">
         </span>
         <br>
         <span>
-          <input type="password" id="input_senha" placeholder="Senha" class="inputs">
-
-          <input type="password" id="input_confirma" placeholder="Confirma Senha" class="inputs">
+          <input type="password" id="input_senha" placeholder="Senha" class="inputs" onfocus="mostrarRequisitosSenha()" onblur="ocultarRequisitosSenha()" oninput="validarSenha()">
+          <input type="password" id="input_confirma" placeholder="Confirma Senha" class="inputs" oninput="validarConfirmarSenha()">
         </span>
         <br>
+
+        <div id="senhaRequisitos" style="display: none; margin-top: 2px;">
+          <p id="letraMinuscula" style="color: red; font-size: 15px;">Deve conter uma letra minúscula</p>
+          <p id="letraMaiuscula" style="color: red;font-size: 15px;">Deve conter uma letra maiúscula</p>
+          <p id="numero" style="color: red;font-size: 15px;">Deve conter um número</p>
+          <p id="caractereEspecial" style="color: red; font-size: 15px;">Deve conter um caractere especial</p>
+        </div>
+
         <button onclick="cadastrar()" class="botao">Cadastre-se</button>
 
-        <div id="div_aguardar" class="loading-div">
+        <div id="div_aguardar" class="loading-div" style="display: none;">
           <img src="./assets/circle-loading.gif" height="30em" id="loading-gif" />
         </div>
 
         <div id="div_erros_login"></div>
       </div>
     </div>
+  </div>
+
+  <script>
+    function validarEmail() {
+      const email = document.getElementById('input_email').value;
+      const emailInput = document.getElementById('input_email');
+      const emailValido = /^[^\s@]+@[^\s@]+\.(com|br|edu)$/.test(email);
+      emailInput.classList.toggle("valid", emailValido);
+      emailInput.classList.toggle("invalid", !emailValido);
+    }
+
+    function validarTelefone() {
+      const telefone = document.getElementById('input_tel').value;
+      const telefoneInput = document.getElementById('input_tel');
+      const telefoneValido = /^\d{10,11}$/.test(telefone); // 10 ou 11 dígitos numéricos
+      telefoneInput.classList.toggle("valid", telefoneValido);
+      telefoneInput.classList.toggle("invalid", !telefoneValido);
+    }
+
+    function mostrarRequisitosSenha() {
+      document.getElementById("senhaRequisitos").style.display = "block";
+    }
+
+    function ocultarRequisitosSenha() {
+      document.getElementById("senhaRequisitos").style.display = "none";
+    }
+
+    function validarSenha() {
+      const senha = document.getElementById("input_senha").value;
+      const temMinuscula = /[a-z]/.test(senha);
+      const temMaiuscula = /[A-Z]/.test(senha);
+      const temNumero = /\d/.test(senha);
+      const temEspecial = /[\W_]/.test(senha);
+
+      document.getElementById("letraMinuscula").style.color = temMinuscula ? "green" : "red";
+      document.getElementById("letraMaiuscula").style.color = temMaiuscula ? "green" : "red";
+      document.getElementById("numero").style.color = temNumero ? "green" : "red";
+      document.getElementById("caractereEspecial").style.color = temEspecial ? "green" : "red";
+
+      document.getElementById("input_senha").style.borderColor =
+        temMinuscula && temMaiuscula && temNumero && temEspecial ? "green" : "red";
+    }
+
+    function validarConfirmarSenha() {
+      const senha = document.getElementById("input_senha").value;
+      const confirmarSenha = document.getElementById("input_confirma").value;
+
+      document.getElementById("input_confirma").style.borderColor =
+        senha === confirmarSenha && senha !== "" ? "green" : "red";
+    }
+
+    function cadastrar() {
+      const nomeVar = document.getElementById("input_nome").value;
+      const sobrenomeVar = document.getElementById("input_sobrenome").value;
+      const emailVar = document.getElementById("input_email").value;
+      const senhaVar = document.getElementById("input_senha").value;
+      const confirmacaoSenhaVar = document.getElementById("input_confirma").value;
+      const telefoneVar = Number(document.getElementById("input_tel").value);
+
+      if (
+        nomeVar == "" ||
+        sobrenomeVar == "" ||
+        emailVar == "" ||
+        senhaVar == "" ||
+        confirmacaoSenhaVar == "" ||
+        telefoneVar == ""
+      ) {
+        document.getElementById("cardErro").style.display = "block";
+        document.getElementById("mensagem_erro").innerHTML =
+          "Preencha todos os campos em branco";
+        return false;
+      }
+
+      if (nomeVar.length < 1) {
+        document.getElementById("cardErro").style.display = "block";
+        document.getElementById("mensagem_erro").innerHTML =
+          "Nome com pelo menos 1 caracter";
+        return false;
+      }
+
+      if (emailVar.indexOf("@") == '-1' || emailVar.indexOf(".") == "-1") {
+        document.getElementById("cardErro").style.display = "block";
+        document.getElementById("mensagem_erro").innerHTML =
+          "E-mail deve conter '@' e '.'";
+        return false;
+      }
+
+      if (senhaVar.length < 6) {
+        document.getElementById("cardErro").style.display = "block";
+        document.getElementById("mensagem_erro").innerHTML =
+          "Senha deve conter mais de 6 caracteres";
+        return false;
+      }
+
+      if (confirmacaoSenhaVar != senhaVar) {
+        document.getElementById("cardErro").style.display = "block";
+        document.getElementById("mensagem_erro").innerHTML =
+          "Senha deve ser igual";
+        return false;
+      }
+
+      if (telefoneVar.length >= 12) {
+        document.getElementById("cardErro").style.display = "block";
+        document.getElementById("mensagem_erro").innerHTML =
+          "Telefone deve conter 12 caracteres";
+        return false;
+      }
+
+      enviarDados(nomeVar, sobrenomeVar, telefoneVar, emailVar, senhaVar, confirmacaoSenhaVar);
+    }
+
+    function enviarDados(nomeVar, sobrenomeVar, telefoneVar, emailVar, senhaVar, confirmacaoSenhaVar) {
+      fetch("/usuarios/cadastrar", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          nomeServer: nomeVar,
+          sobrenomeServer: sobrenomeVar,
+          telefoneServer: telefoneVar,
+          emailServer: emailVar,
+          senhaServer: senhaVar,
+          confirmacaoSenhaServer: confirmacaoSenhaVar
+        }),
+      })
+        .then(function (resposta) {
+          console.log("resposta: ", resposta);
+
+          if (resposta.ok) {
+            document.getElementById("cardErro").style.display = "block";
+            document.getElementById("mensagem_erro").innerHTML =
+              "Cadastro realizado com sucesso! Redirecionando para tela de Login...";
+
+            setTimeout(() => {
+              window.location = "./login2.html";
+            }, "1000");
+
+            limparFormulario();
+          } else {
+            throw "Houve um erro ao tentar realizar o cadastro!";
+          }
+        })
+        .catch(function (resposta) {
+          console.log(`#ERRO: ${resposta}`);
+        });
+
+      return false;
+    }
+
+    function sumirMensagem() {
+      document.getElementById("cardErro").style.display = "none";
+    }
+
+    function limparFormulario() {
+      document.getElementById("input_nome").value = '';
+      document.getElementById("input_sobrenome").value = '';
+      document.getElementById("input_email").value = '';
+      document.getElementById("input_tel").value = '';
+      document.getElementById("input_senha").value = '';
+      document.getElementById("input_confirma").value = '';
+    }
+  </script>
+
 </body>
 
 </html>
-
-<script>
-  function cadastrar() {
-    
-    var nomeVar = input_nome.value;
-    var sobrenomeVar = input_sobrenome.value;
-    var emailVar = input_email.value;
-    var senhaVar = input_senha.value;
-    var confirmacaoSenhaVar = input_confirma.value;
-    var telefoneVar = Number(input_tel.value);
-
-
-    if (
-      nomeVar == "" ||
-      sobrenomeVar == "" ||
-      emailVar == "" ||
-      senhaVar == "" ||
-      confirmacaoSenhaVar == "" ||
-      telefoneVar == ""
-    ) {
-      cardErro.style.display = "block";
-      mensagem_erro.innerHTML =
-        "Preencha todos os campos em branco";
-
-      return false;
-    } if (nomeVar.length < 1) {
-      cardErro.style.display = "block";
-      mensagem_erro.innerHTML =
-        "Nome com pelo menos 1 caracter";
-
-      return false;
-    }
-    if (emailVar.indexOf("@") == '-1' || emailVar.indexOf(".") == "-1") {
-      cardErro.style.display = "block";
-      mensagem_erro.innerHTML =
-        "E-mail deve conter '@' e '.'";
-
-      return false;
-
-    }
-    if (senhaVar.length < 6) {
-      cardErro.style.display = "block";
-      mensagem_erro.innerHTML =
-        "Senha deve conter mais de 6 caracteres";
-
-      return false;
-
-    }
-    if (confirmacaoSenhaVar != senhaVar) {
-      cardErro.style.display = "block";
-      mensagem_erro.innerHTML =
-        "Senha deve ser igual";
-
-      return false;
-    }
-    if (telefoneVar.length >= 12) {
-      cardErro.style.display = "block";
-      mensagem_erro.innerHTML =
-        "Telefone deve conter 12 caracteres";
-
-      return false;
-    }
-
-    enviarDados(nomeVar, sobrenomeVar, telefoneVar, emailVar, senhaVar, confirmacaoSenhaVar)
-
-  }
-
-  function enviarDados(nomeVar, sobrenomeVar, telefoneVar, emailVar, senhaVar, confirmacaoSenhaVar) {
-    fetch("/usuarios/cadastrar", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        nomeServer: nomeVar,
-        sobrenomeServer: sobrenomeVar,
-        telefoneServer: telefoneVar,
-        emailServer: emailVar,
-        senhaServer: senhaVar,
-        confirmacaoSenhaServer: confirmacaoSenhaVar
-      }),
-    })
-      .then(function (resposta) {
-        console.log("resposta: ", resposta);
-
-        if (resposta.ok) {
-          cardErro.style.display = "block";
-
-          mensagem_erro.innerHTML =
-            "Cadastro realizado com sucesso! Redirecionando para tela de Login...";
-
-          setTimeout(() => {
-            window.location = "./login2.html";
-          }, "1000");
-
-          limparFormulario();
-         
-        } else {
-          throw "Houve um erro ao tentar realizar o cadastro!";
-        }
-      })
-      .catch(function (resposta) {
-        console.log(`#ERRO: ${resposta}`);
-       
-      });
-
-
-
-    return false;
-  }
-
-
-  function sumirMensagem() {
-    cardErro.style.display = "none";
-  }
-</script>
