@@ -60,11 +60,11 @@ ORDER BY
 
 function totalDeVotosIndividual(idUser) {
     var instrucaoSql = `
-        SELECT 
-    livro.nome,
-    MAX(usuario.idUsuario) AS idUser,
+       SELECT 
+    livro.nome AS nomeLivro,
+    usuario.idUsuario AS idUser,
     COUNT(votacao.fkLivro) AS qtdVotos,
-    MAX(votacao.dataHora) AS dataHora
+    MAX(votacao.dataHora) AS ultimaVotacao
 FROM 
     votacao
 JOIN 
@@ -72,11 +72,9 @@ JOIN
 JOIN 
     livro ON votacao.fkLivro = livro.idLivro
 WHERE 
-    usuario.idUsuario = (SELECT MAX(idUsuario) FROM usuario)
-    AND
-    votacao.fkUsuario = ${idUser}
+    usuario.idUsuario = ${idUser} 
 GROUP BY 
-    livro.nome, votacao.fkLivro
+    livro.nome, usuario.idUsuario
 ORDER BY 
     qtdVotos DESC;
         `;

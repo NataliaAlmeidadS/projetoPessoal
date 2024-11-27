@@ -1,7 +1,7 @@
 body {
     margin: 0;
     padding: 0;
-    background-color: #05051fd0;
+    background-color: #262b41;
     overflow-x: hidden;
     cursor: pointer;
     display: flex;
@@ -132,6 +132,8 @@ body {
     justify-content: flex-start;
     align-items: center;
     font-size: 50px;
+    margin-left: 90px;
+    margin-top: -60px;
 }
 .grafico2  {
     width: 40%;
@@ -146,19 +148,21 @@ body {
 #kpi_box {
     background-color: #05051f;
     box-shadow: 4px 4px white;
-    margin-top: 30px;
-    border-radius: 30px;
-    width: 300px;
-    height: 150px;
+    margin-top: 40px;
+    border-radius: 21px;
+    width: 277px;
+    height: 291px;
     display: flex;
+    margin-left: 690px;
     align-items: center;
-    justify-content: space-around
+    justify-content: space-around;
     
 }
 
 #kpi_title {
     width: 200px;
     text-align: justify;
+   
     font-size: 25px;
     font-weight: 900;
     color: white;

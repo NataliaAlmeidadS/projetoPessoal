@@ -8,7 +8,7 @@
   <title>Dashboard</title>
 </head>
 
-<body onload="grafico1(); mostrarKpi() ;grafico2()">
+<body onload="grafico1(); mostrarKpi() ;votacaoIndividual();">
   <section id="dash">
     <div class="header">
       <div class="containerTit">
@@ -75,7 +75,7 @@
   validarSessao();
   function grafico1() {
     // Gráfico 1 (barra)
-    const ctx = document.getElementById('myChart2').getContext('2d');
+    const ctx = document.getElementById('myChart').getContext('2d');
 
     fetch('/usuarios/dados-dashboard')
       .then(response => {
@@ -91,6 +91,9 @@
             : 'rgba(255, 99, 132, 0.2)';
         };
 
+        // Calcular o valor máximo dos dados para ajustar o eixo Y
+        const valorMaximo = Math.max(...data.map(item => item['Livro Vencedor']));
+
         new Chart(ctx, {
           type: 'bar',
           data: {
@@ -100,83 +103,256 @@
               data: data.map(item => item['Livro Vencedor']),
               backgroundColor: data.map(item => determineColor(item['Livro Escolhido'])),
               borderColor: data.map(item => determineColor(item['Livro Escolhido']).replace('0.2', '1')),
-              borderWidth: 1
+              borderWidth: 1,
+              barThickness: 87 // Ajusta a largura da barra, igual ao gráfico 2
             }]
           },
           options: {
+            responsive: true,
+            maintainAspectRatio: false,
             scales: {
               y: {
-                ticks: { color: 'white' },
-                beginAtZero: true
+                beginAtZero: true,
+                min: 0,
+                max: valorMaximo + 10,  // Ajusta o valor máximo do eixo Y
+                grid: {
+                  color: '#6c6877af',  // Cor das linhas da grade
+                },
+                border: {
+                  color: '#6c6877af',
+                }
               },
               x: {
-                ticks: { color: 'white' }
+                ticks: {
+                  display: false,  // Esconde as marcas no eixo X
+                },
+                grid: {
+                  color: '#6c6877af',  // Cor das linhas da grade
+                },
+                border: {
+                  color: '#6c6877af'
+                }
               }
             },
             plugins: {
               legend: {
-                labels: { color: 'white' }
+                labels: {
+                  color: '#FFFF'  // Cor da legenda
+                }
+              },
+              tooltip: {
+                titleColor: '#FFFF',
+                bodyColor: '#FFFF',
+              },
+              title: {
+                display: true,
+                text: 'Votação de Livros',
+                color: '#FFFF',
+                font: {
+                  size: 25,
+                  weight: 'bold'
+                }
               }
             }
           }
         });
       })
       .catch(error => console.error('Erro ao obter os dados:', error));
-  }
+}
 
-  function grafico2() {
-    // Gráfico 1 (barra)
-    console.log('carregou a 2')
-    const ctx2 = document.getElementById('myChart').getContext('2d');
 
-    console.log('Antes do fetch');
-  fetch(`/usuarios/votacaoIndividual/${idUser}`)
-      .then(response => {
-        console.log('dps do fetch')
-        if (!response.ok) throw new Error('Erro ao obter os dados do servidor');
-        return response.json();
-      })
-      .then(data => {
-        console.log(data);
+  let grafico
+  function votacaoIndividual() {
+    fetch(`/usuarios/votacaoIndividual/${idUser}`)
+        .then(function (response) {
+            if (response.ok) {
+                response.json().then(function (resposta) {
+                    console.log(`Dados recebidos: ${JSON.stringify(resposta)}`);
+                    grafico2(resposta);
+                });
+            } else {
+                console.error('Nenhum dado encontrado ou erro na API');
+            }
+        })
+        .catch(function (error) {
+            console.error(`Erro na obtenção dos dados p/ gráfico: ${error.message}`);
+        });
+}
+function grafico2(resposta) {
+    // Gráfico 2
+    console.log('carregou a 2');
+    const ctx5 = document.getElementById('myChart2').getContext('2d');
 
-        var lista_labels = [];
-        var lista_data = [];
+    let index = 0;
 
-        for (var i = 0; i < data.length; i++) {
-          lista_labels.push(data[i].nome);
-          lista_data.push(data[i].qtdVotos)
+    // Destruir o gráfico anterior, se existir
+    if (grafico) {
+        grafico.destroy();  // Destrói o gráfico anterior
+    }
+
+    if (Array.isArray(resposta)) {
+        const dados = resposta.map(item => item.qtdVotos);  // Dados extraídos da resposta
+        const labels = ["Livro1", "Livro2", "Livro3", "Livro4"]; // Exemplo de labels
+
+        console.log('Dados extraídos:', dados);
+
+        if (dados.length === 0) {
+            console.error('Nenhum dado encontrado para o gráfico.');
+            return;
         }
-        new Chart(ctx2, {
-          type: 'bar',
-          data: {
-            labels: lista_labels,
-            datasets: [{
-          label: `Votos ${sessionStorage.NOME_USUARIO}`,
-              data: lista_data,
-              borderWidth: 1
-            }]
-          },
-          options: {
-            scales: {
-              y: {
-                ticks: { color: 'white' },
-                beginAtZero: true
-              },
-              x: {
-                ticks: { color: 'white' }
-              }
-            },
-            plugins: {
-              legend: {
-                labels: { color: 'white' }
-              }
-            }
-          }
-        });
-      })
-      .catch(error => console.error('Erro ao obter os dados:', error));
-  }
 
+        // Calcular o valor máximo dos dados para ajustar o eixo Y
+        const valorMaximo = Math.max(...dados);
+
+        const determineColor = (label) => {
+            return label.startsWith('L')
+                ? 'rgba(54, 162, 235, 0.2)'  // Cor azul para rótulos que começam com 'M'
+                : 'rgba(255, 99, 132, 0.2)'; // Cor vermelha para os outros
+        };
+
+        // Criação do gráfico
+        grafico = new Chart(ctx5, {
+            type: 'bar',
+            data: {
+                labels: [],  // Inicializa com um array vazio
+                datasets: [{
+                    label: 'Votos',
+                    data: [],  // Inicializa com um array vazio
+                    backgroundColor: [],  // Inicializa com um array vazio
+                    borderColor: [],  // Inicializa com um array vazio
+                    borderWidth: 1,
+                    barThickness: 87 // Ajusta a largura da barra
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        min: 0,
+                        max: valorMaximo + 10,  // Ajusta o valor máximo do eixo Y
+                        grid: {
+                            color: '#6c6877af',
+                        },
+                        border: {
+                            color: '#6c6877af',
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            display: false,  // Esconde as marcas no eixo X
+                        },
+                        grid: {
+                            color: '#6c6877af',
+                        },
+                        border: {
+                            color: '#6c6877af'
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false,
+                        labels: {
+                            color: '#FFFF'
+                        }
+                    },
+                    tooltip: {
+                        titleColor: '#FFFF',
+                        bodyColor: '#FFFF',
+                    },
+                    title: {
+                        display: true,
+                        text: `Votos ${sessionStorage.NOME_USUARIO}`,
+                        color: '#FFFF',
+                        font: {
+                            size: 25,
+                            weight: 'bold'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Atualização incremental
+        const intervalo = setInterval(() => {
+            if (index >= dados.length) {
+                clearInterval(intervalo);  // Para a atualização quando todos os dados forem processados
+                return;
+            }
+
+            // Atualiza os dados do gráfico
+            grafico.data.labels.push(labels[index % labels.length]);  // Rótulos cíclicos
+            grafico.data.datasets[0].data.push(dados[index]);  // Adiciona os dados
+            grafico.data.datasets[0].backgroundColor.push(determineColor(labels[index]));  // Cor de fundo
+            grafico.data.datasets[0].borderColor.push(determineColor(labels[index]).replace('0.2', '1'));  // Cor da borda
+
+            // Atualiza o gráfico
+            grafico.update();
+            index++;
+        }, 1000); // Intervalo de 5 segundos para cada atualização
+    } else {
+        console.error('A resposta da API não é um array.', resposta);
+    }
+}
+
+
+
+
+
+  //   console.log('Antes do fetch');
+  // fetch(`/usuarios/votacaoIndividual/${idUser}`)
+      // .then(response => {
+      //   console.log('dps do fetch' + response)
+      //   if (!response.ok) throw new Error('Erro ao obter os dados do servidor');
+      //   return response.json();
+      //   console.log(response.qtdVotos);
+        
+      // })
+
+      // .then(data => {
+      //   console.log(data);
+
+      //   var lista_labels = [];
+      //   var lista_data = [];
+
+      //   for (var i = 0; i < data.length; i++) {
+      //     lista_labels.push(data[i].nome);
+      //     lista_data.push(data[i].qtdVotos)
+         
+      //   }
+
+      //   new Chart(ctx2, {
+      //     type: 'bar',
+      //     data: {
+      //       labels: lista_labels,
+      //       datasets: [{
+      //     label: `Votos ${sessionStorage.NOME_USUARIO}`,
+      //         data: lista_data,
+      //         borderWidth: 1
+      //       }]
+      //     },
+      //     options: {
+      //       scales: {
+      //         y: {
+      //           ticks: { color: 'white' },
+      //           beginAtZero: true
+      //         },
+      //         x: {
+      //           ticks: { color: 'white' }
+      //         }
+      //       },
+      //       plugins: {
+      //         legend: {
+      //           labels: { color: 'white' }
+      //         }
+      //       }
+      //     }
+      //   });
+      // })
+      // .catch(error => console.error('Erro ao obter os dados:', error));
+  
   function mostrarKpi() {
     console.log(idUser);
     

@@ -63,6 +63,8 @@ WHERE
 ORDER BY 
     votacao.dataHora DESC;
 
+    
+
 
 --  SELECT count(idVotacao) AS totalVotos FROM votacao;
    
