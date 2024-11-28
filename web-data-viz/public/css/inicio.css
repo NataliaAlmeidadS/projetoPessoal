@@ -141,8 +141,8 @@ section {
 
 .sobre {
     background-color: #DEDAD5;
-    background-image: url(../assets/atuacao.png); 
-    background-size: 200px 212px;
+    background-image: url(../assets/livro.png); 
+    background-size: 281px 280px;;
     background-repeat: no-repeat;
     display: flex;
     justify-content: start;

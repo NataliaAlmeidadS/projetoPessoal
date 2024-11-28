@@ -71,7 +71,7 @@ function cadastrar() {
 
   
     // Enviando o valor da nova input
-    fetch("/metricas/cadastrarMetrica", {
+    fetch("/usuarios/registrarMetricasQuiz", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",

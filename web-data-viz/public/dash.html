@@ -8,7 +8,7 @@
   <title>Dashboard</title>
 </head>
 
-<body onload="grafico1(); mostrarKpi() ;votacaoIndividual();">
+<body onload="grafico1(); mostrarKpi() ;grafico2();">
   <section id="dash">
     <div class="header">
       <div class="containerTit">
@@ -73,213 +73,229 @@
   }
 
   validarSessao();
+
   function grafico1() {
-    // Gráfico 1 (barra)
-    const ctx = document.getElementById('myChart').getContext('2d');
+  const ctx = document.getElementById('myChart').getContext('2d');
+  var tentativa = [];
+  var tentativaAtual = 0;  // Definindo a tentativa atual (você pode atribuir dinamicamente)
 
-    fetch('/usuarios/dados-dashboard')
-      .then(response => {
-        if (!response.ok) throw new Error('Erro ao obter os dados do servidor');
-        return response.json();
-      })
-      .then(data => {
-        if (!Array.isArray(data) || data.length === 0) throw new Error("Dados inválidos ou vazios.");
+  fetch(`/usuarios/buscarMetricasQuiz?parametro=${idUser}`)
+    .then(response => {
+      if (!response.ok) throw new Error('Erro ao obter os dados do servidor');
+      return response.json();
+    })
+    .then(data => {
+      if (!Array.isArray(data) || data.length === 0) throw new Error("Dados inválidos ou vazios.");
 
-        const determineColor = (label) => {
-          return label.startsWith('M')
-            ? 'rgba(54, 162, 235, 0.2)'
-            : 'rgba(255, 99, 132, 0.2)';
-        };
+      // Definindo um array de cores para as barras
+      const cores = [
+        'rgba(54, 162, 235, 0.6)',  // Azul
+        'rgba(255, 99, 132, 0.6)',  // Vermelho
+        'rgba(75, 192, 192, 0.6)',  // Verde
+        'rgba(153, 102, 255, 0.6)', // Roxo
+        'rgba(255, 159, 64, 0.6)',  // Laranja
+        'rgba(255, 205, 86, 0.6)',  // Amarelo
+        'rgba(201, 203, 207, 0.6)', // Cinza
+      ];
 
-        // Calcular o valor máximo dos dados para ajustar o eixo Y
-        const valorMaximo = Math.max(...data.map(item => item['Livro Vencedor']));
+      // Atualizar as labels de tentativa
+      for (let i = 0; i < data.length; i++) {
+        tentativa.push(`Tentativa ${i + 1}`);
+      }
 
-        new Chart(ctx, {
-          type: 'bar',
-          data: {
-            labels: data.map(item => item['Livro Escolhido']),
-            datasets: [{
-              label: 'Todos os votos',
-              data: data.map(item => item['Livro Vencedor']),
-              backgroundColor: data.map(item => determineColor(item['Livro Escolhido'])),
-              borderColor: data.map(item => determineColor(item['Livro Escolhido']).replace('0.2', '1')),
+      // Extrair valores máximos de acertos e erros
+      const maxAcertos = Math.max(...data.map(item => item.qntdAcertos));
+      const maxErros = Math.max(...data.map(item => item.qntdErros));
+      const valorMaximo = Math.max(maxAcertos, maxErros);
+
+      // Criação do gráfico
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: tentativa,  // Exibe as tentativas no eixo X
+          datasets: [
+            {
+              label: 'Acertos',
+              data: data.map(item => item.qntdAcertos),
+              backgroundColor: data.map((_, index) => cores[index % cores.length]), // Atribui uma cor do array de cores
+              borderColor: data.map((_, index) => cores[index % cores.length].replace('0.6', '1')),  // A cor da borda será um pouco mais intensa
               borderWidth: 1,
-              barThickness: 87 // Ajusta a largura da barra, igual ao gráfico 2
-            }]
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-              y: {
-                beginAtZero: true,
-                min: 0,
-                max: valorMaximo + 10,  // Ajusta o valor máximo do eixo Y
-                grid: {
-                  color: '#6c6877af',  // Cor das linhas da grade
-                },
-                border: {
-                  color: '#6c6877af',
-                }
+              barThickness: 70,  // Largura maior para as barras
+            },
+            {
+              label: 'Erros',
+              data: data.map(item => item.qntdErros),
+              backgroundColor: data.map((_, index) => cores[(index + 1) % cores.length]),  // Usar uma cor diferente para erros
+              borderColor: data.map((_, index) => cores[(index + 1) % cores.length].replace('0.6', '1')),  // Borda mais intensa
+              borderWidth: 1,
+              barThickness: 70,  // Largura maior para as barras
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: {
+              beginAtZero: true,
+              min: 0,
+              max: valorMaximo + 10,  // Ajusta o valor máximo do eixo Y
+              grid: {
+                color: '#6c6877af',  // Cor das linhas da grade
               },
-              x: {
-                ticks: {
-                  display: false,  // Esconde as marcas no eixo X
-                },
-                grid: {
-                  color: '#6c6877af',  // Cor das linhas da grade
-                },
-                border: {
-                  color: '#6c6877af'
-                }
+              border: {
+                color: '#6c6877af',
               }
             },
-            plugins: {
-              legend: {
-                labels: {
-                  color: '#FFFF'  // Cor da legenda
-                }
+            x: {
+              grid: {
+                color: '#6c6877af',  // Cor das linhas da grade
               },
-              tooltip: {
-                titleColor: '#FFFF',
-                bodyColor: '#FFFF',
+              border: {
+                color: '#6c6877af'
               },
-              title: {
-                display: true,
-                text: 'Votação de Livros',
-                color: '#FFFF',
-                font: {
-                  size: 25,
-                  weight: 'bold'
-                }
+              barPercentage: 0.8,  // Aumenta o espaçamento entre as barras (diminui a largura relativa da categoria)
+              categoryPercentage: 0.8,  // Aumenta o espaço entre as barras
+            }
+          },
+          plugins: {
+            legend: {
+              labels: {
+                color: '#FFFF'  // Cor da legenda
+              }
+            },
+            tooltip: {
+              titleColor: '#FFFF',
+              bodyColor: '#FFFF',
+            },
+            title: {
+              display: true,
+              text: 'Métricas de Acertos e Erros',
+              color: '#FFFF',
+              font: {
+                size: 25,
+                weight: 'bold'
               }
             }
           }
-        });
-      })
-      .catch(error => console.error('Erro ao obter os dados:', error));
+        }
+      });
+    })
+    .catch(error => console.error('Erro ao obter os dados:', error));
 }
 
 
   let grafico
-  function votacaoIndividual() {
-    fetch(`/usuarios/votacaoIndividual/${idUser}`)
-        .then(function (response) {
-            if (response.ok) {
-                response.json().then(function (resposta) {
-                    console.log(`Dados recebidos: ${JSON.stringify(resposta)}`);
-                    grafico2(resposta);
-                });
-            } else {
-                console.error('Nenhum dado encontrado ou erro na API');
-            }
-        })
-        .catch(function (error) {
-            console.error(`Erro na obtenção dos dados p/ gráfico: ${error.message}`);
-        });
-}
-function grafico2(resposta) {
-    // Gráfico 2
-    console.log('carregou a 2');
+
+  function grafico2() {
     const ctx5 = document.getElementById('myChart2').getContext('2d');
 
     let index = 0;
 
     // Destruir o gráfico anterior, se existir
     if (grafico) {
-        grafico.destroy();  // Destrói o gráfico anterior
+      grafico.destroy();  // Destrói o gráfico anterior
     }
 
-    if (Array.isArray(resposta)) {
-        const dados = resposta.map(item => item.qtdVotos);  // Dados extraídos da resposta
-        const labels = ["Livro1", "Livro2", "Livro3", "Livro4"]; // Exemplo de labels
+    // Fazer o fetch para obter os dados
+    fetch(`/usuarios/votacaoIndividual?parametro=${idUser}`)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Erro ao obter dados para o gráfico');
+        }
+        return response.json();
+      })
+      .then(resposta => {
+        if (Array.isArray(resposta)) {
+          const dados = resposta.map(item => item.qtdVotos);  // Dados extraídos da resposta
+          const labels = ["Livro1", "Livro2", "Livro3", "Livro4"]; // Exemplo de labels
 
-        console.log('Dados extraídos:', dados);
+          console.log('Dados extraídos:', dados);
 
-        if (dados.length === 0) {
+          if (dados.length === 0) {
             console.error('Nenhum dado encontrado para o gráfico.');
             return;
-        }
+          }
 
-        // Calcular o valor máximo dos dados para ajustar o eixo Y
-        const valorMaximo = Math.max(...dados);
+          // Calcular o valor máximo dos dados para ajustar o eixo Y
+          const valorMaximo = Math.max(...dados);
 
-        const determineColor = (label) => {
+          const determineColor = (label) => {
             return label.startsWith('L')
-                ? 'rgba(54, 162, 235, 0.2)'  // Cor azul para rótulos que começam com 'M'
-                : 'rgba(255, 99, 132, 0.2)'; // Cor vermelha para os outros
-        };
+              ? 'rgba(54, 162, 235, 0.2)'  // Cor azul para rótulos que começam com 'L'
+              : 'rgba(255, 99, 132, 0.2)'; // Cor vermelha para os outros
+          };
 
-        // Criação do gráfico
-        grafico = new Chart(ctx5, {
+          // Criação do gráfico
+          grafico = new Chart(ctx5, {
             type: 'bar',
             data: {
-                labels: [],  // Inicializa com um array vazio
-                datasets: [{
-                    label: 'Votos',
-                    data: [],  // Inicializa com um array vazio
-                    backgroundColor: [],  // Inicializa com um array vazio
-                    borderColor: [],  // Inicializa com um array vazio
-                    borderWidth: 1,
-                    barThickness: 87 // Ajusta a largura da barra
-                }]
+              labels: [],  // Inicializa com um array vazio
+              datasets: [{
+                label: 'Votos',
+                data: [],  // Inicializa com um array vazio
+                backgroundColor: [],  // Inicializa com um array vazio
+                borderColor: [],  // Inicializa com um array vazio
+                borderWidth: 1,
+                barThickness: 87 // Ajusta a largura da barra
+              }]
             },
             options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        min: 0,
-                        max: valorMaximo + 10,  // Ajusta o valor máximo do eixo Y
-                        grid: {
-                            color: '#6c6877af',
-                        },
-                        border: {
-                            color: '#6c6877af',
-                        }
-                    },
-                    x: {
-                        ticks: {
-                            display: false,  // Esconde as marcas no eixo X
-                        },
-                        grid: {
-                            color: '#6c6877af',
-                        },
-                        border: {
-                            color: '#6c6877af'
-                        }
-                    }
+              responsive: true,
+              maintainAspectRatio: false,
+              scales: {
+                y: {
+                  beginAtZero: true,
+                  min: 0,
+                  max: valorMaximo + 10,  // Ajusta o valor máximo do eixo Y
+                  grid: {
+                    color: '#6c6877af',
+                  },
+                  border: {
+                    color: '#6c6877af',
+                  }
                 },
-                plugins: {
-                    legend: {
-                        display: false,
-                        labels: {
-                            color: '#FFFF'
-                        }
-                    },
-                    tooltip: {
-                        titleColor: '#FFFF',
-                        bodyColor: '#FFFF',
-                    },
-                    title: {
-                        display: true,
-                        text: `Votos ${sessionStorage.NOME_USUARIO}`,
-                        color: '#FFFF',
-                        font: {
-                            size: 25,
-                            weight: 'bold'
-                        }
-                    }
+                x: {
+                  ticks: {
+                    display: false,  // Esconde as marcas no eixo X
+                  },
+                  grid: {
+                    color: '#6c6877af',
+                  },
+                  border: {
+                    color: '#6c6877af'
+                  }
                 }
+              },
+              plugins: {
+                legend: {
+                  display: false,
+                  labels: {
+                    color: '#FFFF'
+                  }
+                },
+                tooltip: {
+                  titleColor: '#FFFF',
+                  bodyColor: '#FFFF',
+                },
+                title: {
+                  display: true,
+                  text: `Votos ${sessionStorage.NOME_USUARIO}`,
+                  color: '#FFFF',
+                  font: {
+                    size: 25,
+                    weight: 'bold'
+                  }
+                }
+              }
             }
-        });
+          });
 
-        // Atualização incremental
-        const intervalo = setInterval(() => {
+          // Atualização incremental
+          const intervalo = setInterval(() => {
             if (index >= dados.length) {
-                clearInterval(intervalo);  // Para a atualização quando todos os dados forem processados
-                return;
+              clearInterval(intervalo);  // Para a atualização quando todos os dados forem processados
+              return;
             }
 
             // Atualiza os dados do gráfico
@@ -291,71 +307,19 @@ function grafico2(resposta) {
             // Atualiza o gráfico
             grafico.update();
             index++;
-        }, 1000); // Intervalo de 5 segundos para cada atualização
-    } else {
-        console.error('A resposta da API não é um array.', resposta);
-    }
-}
+          }, 1000); // Intervalo de 1 segundo para cada atualização
+        } else {
+          console.error('A resposta da API não é um array.', resposta);
+        }
+      })
+      .catch(error => {
+        console.error('Erro ao buscar dados:', error);
+      });
+  }
 
-
-
-
-
-  //   console.log('Antes do fetch');
-  // fetch(`/usuarios/votacaoIndividual/${idUser}`)
-      // .then(response => {
-      //   console.log('dps do fetch' + response)
-      //   if (!response.ok) throw new Error('Erro ao obter os dados do servidor');
-      //   return response.json();
-      //   console.log(response.qtdVotos);
-        
-      // })
-
-      // .then(data => {
-      //   console.log(data);
-
-      //   var lista_labels = [];
-      //   var lista_data = [];
-
-      //   for (var i = 0; i < data.length; i++) {
-      //     lista_labels.push(data[i].nome);
-      //     lista_data.push(data[i].qtdVotos)
-         
-      //   }
-
-      //   new Chart(ctx2, {
-      //     type: 'bar',
-      //     data: {
-      //       labels: lista_labels,
-      //       datasets: [{
-      //     label: `Votos ${sessionStorage.NOME_USUARIO}`,
-      //         data: lista_data,
-      //         borderWidth: 1
-      //       }]
-      //     },
-      //     options: {
-      //       scales: {
-      //         y: {
-      //           ticks: { color: 'white' },
-      //           beginAtZero: true
-      //         },
-      //         x: {
-      //           ticks: { color: 'white' }
-      //         }
-      //       },
-      //       plugins: {
-      //         legend: {
-      //           labels: { color: 'white' }
-      //         }
-      //       }
-      //     }
-      //   });
-      // })
-      // .catch(error => console.error('Erro ao obter os dados:', error));
-  
   function mostrarKpi() {
     console.log(idUser);
-    
+
     var kpi_value = document.getElementById('kpi_value');
 
     if (!kpi_value) {
@@ -391,7 +355,7 @@ function grafico2(resposta) {
       });
 
   }
-  
+
 
 </script>
 
