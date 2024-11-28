@@ -72,9 +72,9 @@ JOIN
 JOIN 
     livro ON votacao.fkLivro = livro.idLivro
 WHERE 
-    usuario.idUsuario = ${idUser} 
+    usuario.idUsuario = ${idUser}
 GROUP BY 
-    livro.nome, usuario.idUsuario
+    livro.nome, usuario.idUsuario 
 ORDER BY 
     qtdVotos DESC;
         `;
@@ -91,11 +91,27 @@ function getKpi(idUser) {
     console.log("Executando a instrução SQL: \n" + instrucaoSql);
     return database.executar(instrucaoSql).then((resultado) => {
         if (resultado.length > 0 && resultado[0].qtd !== undefined) {
-            return resultado[0].qtd; // Retorna apenas o número de votos
+            return resultado[0].qtd;
         } else {
-            return 0; // Nenhum resultado encontrado
+            return 0;
         }
     });
+}
+
+function buscarMetricasQuiz(idUser) {
+    const instrucaoSql = `select * from quiz where fkUsuario = ${idUser};`;
+    console.log("Executando a instrução SQL: \n" + instrucaoSql);
+    return database.executar(instrucaoSql);
+}
+
+function registrarRespostaQuiz(idUser, acertos, erros) {
+    console.log("ACESSEI O USUARIO MODEL \n \n\t\t >> Se aqui der erro de 'Error: connect ECONNREFUSED',\n \t\t >> verifique suas credenciais de acesso ao banco\n \t\t >> e se o servidor de seu BD está rodando corretamente. \n\n function cadastrar():", idUser, acertos, erros);
+
+    var instrucaoSql = `
+        INSERT INTO quiz (qntdAcertos, qntdErros, fkUsuario ) VALUES ('${acertos}','${erros}','${idUser}');
+    `;
+    console.log("Executando a instrução SQL: \n" + instrucaoSql);
+    return database.executar(instrucaoSql);
 }
 
 
@@ -104,6 +120,8 @@ module.exports = {
     cadastrar,
     buscarConjuntosVotados,
     totalDeVotos,
+    buscarMetricasQuiz,
     getKpi,
-    totalDeVotosIndividual
+    totalDeVotosIndividual,
+    registrarRespostaQuiz
 };

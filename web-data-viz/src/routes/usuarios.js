@@ -22,12 +22,26 @@ router.get("/dados-grafico2", function (req, res) {
     usuarioController.obterTotalVotos(req, res);
 });
 
-router.get("/votacaoIndividual/:idUser", function (req, res) {
+router.get("/votacaoIndividual", function (req, res) {
     usuarioController.obterTotalVotosIndividual(req, res);
 });
 
 router.get("/kpi", function (req, res) {
     usuarioController.getKpi(req, res);
 });
+
+// router.get("/mostrarGrafico", function (req, res) {
+//     usuarioController.getKpi(req, res);
+// });
+
+router.get("/buscarMetricasQuiz", function (req, res) {
+    usuarioController.buscarMetricasQuiz(req, res);
+});
+
+router.post("/registrarMetricasQuiz", function (req, res) {
+    usuarioController.registrarRespostaQuiz(req, res);
+});
+
+
 
 module.exports = router;

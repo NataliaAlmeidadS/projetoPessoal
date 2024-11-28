@@ -25,14 +25,10 @@ function autenticar(req, res) {
                             idusuario: resultadoAutenticar[0].idusuario,
                             email: resultadoAutenticar[0].email,
                             nome: resultadoAutenticar[0].nome
-                        })
-                        res.status(200).json(resultadoAutenticar);
-                    } else if (resultadoAutenticar.length == 0) {
-                        res.status(403).send("Email e/ou senha inválido(s)");
-                    } else {
-                        res.status(403).send("Mais de um usuário com o mesmo login e senha!");
+                        }); // Apenas esta resposta
                     }
                 }
+
             ).catch(
                 function (erro) {
                     console.log(erro);
@@ -51,12 +47,12 @@ function cadastrar(req, res) {
     var telefone = req.body.telefoneServer;
     var email = req.body.emailServer;
     var senha = req.body.senhaServer;
-   var confirmarSenha = req.body.confirmacaoSenhaServer;
+    var confirmarSenha = req.body.confirmacaoSenhaServer;
 
     // Faça as validações dos valores
     if (nome == undefined) {
         res.status(400).send("Seu nome está undefined!");
-    } else if (sobrenome== undefined) {
+    } else if (sobrenome == undefined) {
         res.status(400).send("Seu sobrenome está undefined!");
     } else if (telefone == undefined) {
         res.status(400).send("Seu telefone está undefined!");
@@ -64,9 +60,9 @@ function cadastrar(req, res) {
         res.status(400).send("Seu email está undefined!");
     } else if (senha == undefined) {
         res.status(400).send("Sua senha está undefined!");
-    }else if (confirmarSenha == undefined) {
+    } else if (confirmarSenha == undefined) {
         res.status(400).send("Sua senha está undefined!");
-    }else {
+    } else {
 
         // Passe os valores como parâmetro e vá para o arquivo usuarioModel.js
         usuarioModel.cadastrar(nome, sobrenome, telefone, email, senha, confirmarSenha)
@@ -87,7 +83,7 @@ function cadastrar(req, res) {
     }
 }
 
-function buscarConjuntosVotados(req, res) { 
+function buscarConjuntosVotados(req, res) {
     usuarioModel.buscarConjuntosVotados()
         .then(function (resultado) {
             console.log(resultado);  // Para depurar e verificar o que está sendo retornado
@@ -121,9 +117,7 @@ function obterTotalVotos(req, res) {
 }
 
 function obterTotalVotosIndividual(req, res) {
-    var idUser = req.params.idUser;
-
-  
+    var idUser = req.query.parametro;
     usuarioModel.totalDeVotosIndividual(idUser)
         .then(function (resultado) {
             res.json(resultado);
@@ -137,12 +131,59 @@ function obterTotalVotosIndividual(req, res) {
 
 function getKpi(req, res) {
     var idUser = req.query.parametro;
-        usuarioModel.getKpi(idUser).then(resultado => {
-            res.json(resultado)
-        }).catch(
+    usuarioModel.getKpi(idUser).then(resultado => {
+        res.json(resultado)
+    }).catch(
+        function (erro) {
+            console.log(erro);
+            console.log("Houve um erro ao buscar as estatisticas", erro.sqlMessage);
+            res.status(500).json(erro.sqlMessage);
+        }
+    );
+}
+function buscarMetricasQuiz(req, res) {
+    var idUser = req.query.parametro;
+    usuarioModel.buscarMetricasQuiz(idUser).then(resultado => {
+        res.json(resultado)
+    }).catch(
+        function (erro) {
+            console.log(erro);
+            console.log("Houve um erro ao buscar as estatisticas", erro.sqlMessage);
+            res.status(500).json(erro.sqlMessage);
+        }
+    );
+}
+
+function mostrarGrafico(req, res) {
+    var idUser = req.query.parametro;
+    usuarioModel.mostrarGrafico(idUser).then(resultado => {
+        res.json(resultado)
+    }).catch(
+        function (erro) {
+            console.log(erro);
+            console.log("Houve um erro ao buscar as estatisticas", erro.sqlMessage);
+            res.status(500).json(erro.sqlMessage);
+        }
+    );
+}
+
+function registrarRespostaQuiz(req, res) {
+    var idUser = req.body.idUserServer;
+    var acertos = req.body.acertosServer;
+    var erros = req.body.errosServer;
+
+    usuarioModel.registrarRespostaQuiz(idUser, acertos, erros)
+        .then(
+            function (resultado) {
+                res.json(resultado);
+            }
+        ).catch(
             function (erro) {
                 console.log(erro);
-                console.log("Houve um erro ao buscar as estatisticas", erro.sqlMessage);
+                console.log(
+                    "\nHouve um erro ao realizar o cadastro! Erro: ",
+                    erro.sqlMessage
+                );
                 res.status(500).json(erro.sqlMessage);
             }
         );
@@ -153,8 +194,10 @@ module.exports = {
     autenticar,
     cadastrar,
     buscarConjuntosVotados,
-    obterTotalVotos,
+    buscarMetricasQuiz,
+    mostrarGrafico,
     getKpi,
-    obterTotalVotosIndividual
+    obterTotalVotosIndividual,
+    registrarRespostaQuiz
 }
 
