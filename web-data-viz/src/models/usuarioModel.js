@@ -120,25 +120,25 @@ function registrarRespostaQuiz(idUser, acertos, erros, respostasDetalhadas) {
     console.log("ACESSEI O USUARIO MODEL \n \n\t\t >> Se aqui der erro de 'Error: connect ECONNREFUSED',\n \t\t >> verifique suas credenciais de acesso ao banco\n \t\t >> e se o servidor de seu BD está rodando corretamente. \n\n function registrarRespostaQuiz:", idUser, acertos, erros);
 
     var instrucaoSql = `
-        INSERT INTO quiz (qntdAcertos, qntdErros, dtQuiz ,fkUsuario) VALUES ('${acertos}','${erros}',NOW(),'${idUser}');
+        INSERT INTO quiz (qntdAcertos, qntdErros,fkUsuario) VALUES ('${acertos}','${erros}','${idUser}');
     `;
     console.log("Executando a instrução SQL: \n" + instrucaoSql);
 
     return database.executar(instrucaoSql)
-        .then(function(resultado) {
-            const quizId = resultado.insertId; 
-            const promises = respostasDetalhadas.map(resposta => {
-                return registrarRespostaDetalhada(quizId, resposta.questionId, resposta.correct);
-            });
+        // .then(function(resultado) {
+        //     const quizId = resultado.insertId; 
+        //     const promises = respostasDetalhadas.map(resposta => {
+        //         return registrarRespostaDetalhada(quizId, resposta.questionId, resposta.correct);
+        //     });
 
-            // Esperamos todas as respostas detalhadas serem inseridas
-            return Promise.all(promises);
-        })
-        .catch(function(erro) {
-            console.log(erro);
-            console.log("\nHouve um erro ao realizar o cadastro! Erro: ", erro.sqlMessage);
-            throw erro;
-        });
+        //     // Esperamos todas as respostas detalhadas serem inseridas
+        //     return Promise.all(promises);
+        // })
+        // .catch(function(erro) {
+        //     console.log(erro);
+        //     console.log("\nHouve um erro ao realizar o cadastro! Erro: ", erro.sqlMessage);
+        //     throw erro;
+        // });
 }
 
 module.exports = {

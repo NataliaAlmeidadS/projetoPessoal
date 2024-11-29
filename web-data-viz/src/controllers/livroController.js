@@ -1,7 +1,8 @@
 const livroModel = require("../models/livroModel");
 
 function cadastrarLivro(req, res) {
-    const { idusuario, livroEscolhido } = req.body;
+    var idusuario = req.body.idusuario;
+    var livroEscolhido = req.body.livroEscolhido;
 
     console.log(livroEscolhido)
     // if (!idUsuario || !livroEscolhido) {

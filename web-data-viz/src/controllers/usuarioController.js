@@ -204,15 +204,15 @@ function registrarRespostaQuiz(req, res) {
     usuarioModel.registrarRespostaQuiz(idUser, acertos, erros)
         .then(function (resultado) {
             // Após o registro das métricas gerais, vamos registrar as respostas detalhadas
-            const quizId = resultado.insertId;  // ID do quiz recém inserido no banco
+            // const quizId = resultado.insertId;  // ID do quiz recém inserido no banco
 
             // Agora registramos as respostas de cada questão
-            const promises = respostas.map(resposta => {
-                return usuarioModel.registrarRespostaDetalhada(quizId, resposta.questionId, resposta.correct);
-            });
+            // const promises = respostas.map(resposta => {
+            //     return usuarioModel.registrarRespostaDetalhada(quizId, resposta.questionId, resposta.correct);
+            // });
 
             // Esperamos que todas as promessas de inserção das respostas sejam resolvidas
-            return Promise.all(promises);
+            // return Promise.all(promises);
         })
         .then(function () {
             // Se tudo deu certo, retornamos um sucesso
