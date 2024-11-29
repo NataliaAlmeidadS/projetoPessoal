@@ -42,6 +42,9 @@ router.post("/registrarMetricasQuiz", function (req, res) {
     usuarioController.registrarRespostaQuiz(req, res);
 });
 
+router.get("/buscarErrosAcertoAdm", function (req, res) {
+    usuarioController.buscarErroAcertoAdm(req, res);
+});
 
 
 module.exports = router;

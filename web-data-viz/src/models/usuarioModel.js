@@ -39,21 +39,18 @@ function buscarConjuntosVotados() {
     // Executar a instrução SQL e retornar os resultados
     return database.executar(instrucaoSql);
 }
-function totalDeVotos(idUser) {
+function totalDeVotos() {
     var instrucaoSql = `
-             SELECT 
-    usuario.idUsuario AS idUser,
-    votacao.fkLivro, 
-    votacao.dataHora
-FROM 
-    votacao
-JOIN 
-    usuario ON votacao.fkUsuario = usuario.idUsuario
-WHERE 
-    usuario.idUsuario = (SELECT MAX(idUsuario) FROM usuario) 
-ORDER BY 
-    votacao.dataHora DESC;
-        `;
+       SELECT
+            fkLivro AS idLivro,
+            COUNT(*) AS totalVotos
+        FROM
+            votacao
+        GROUP BY
+            fkLivro
+        ORDER BY
+            totalVotos DESC;
+    `;
     console.log("Executando a instrução SQL: \n" + instrucaoSql);
     return database.executar(instrucaoSql);
 }
@@ -82,6 +79,21 @@ ORDER BY
     return database.executar(instrucaoSql);
 }
 
+// Model
+function buscarErroAcertoAdm() {
+    var instrucaoSql = `
+    SELECT 
+        idQuiz,
+        qntdAcertos,
+        qntdErros,
+        DATE_FORMAT(dtQuiz, '%d/%m/%Y') AS dataQuiz
+    FROM quiz
+    ORDER BY dtQuiz DESC;
+    `;
+    console.log("Executando a instrução SQL: \n" + instrucaoSql);
+    return database.executar(instrucaoSql);  // Executa a query e retorna os dados
+}
+
 function getKpi(idUser) {
     var instrucaoSql = `
         SELECT COUNT(*) AS qtd 
@@ -104,16 +116,30 @@ function buscarMetricasQuiz(idUser) {
     return database.executar(instrucaoSql);
 }
 
-function registrarRespostaQuiz(idUser, acertos, erros) {
-    console.log("ACESSEI O USUARIO MODEL \n \n\t\t >> Se aqui der erro de 'Error: connect ECONNREFUSED',\n \t\t >> verifique suas credenciais de acesso ao banco\n \t\t >> e se o servidor de seu BD está rodando corretamente. \n\n function cadastrar():", idUser, acertos, erros);
+function registrarRespostaQuiz(idUser, acertos, erros, respostasDetalhadas) {
+    console.log("ACESSEI O USUARIO MODEL \n \n\t\t >> Se aqui der erro de 'Error: connect ECONNREFUSED',\n \t\t >> verifique suas credenciais de acesso ao banco\n \t\t >> e se o servidor de seu BD está rodando corretamente. \n\n function registrarRespostaQuiz:", idUser, acertos, erros);
 
     var instrucaoSql = `
-        INSERT INTO quiz (qntdAcertos, qntdErros, fkUsuario ) VALUES ('${acertos}','${erros}','${idUser}');
+        INSERT INTO quiz (qntdAcertos, qntdErros, dtQuiz ,fkUsuario) VALUES ('${acertos}','${erros}',NOW(),'${idUser}');
     `;
     console.log("Executando a instrução SQL: \n" + instrucaoSql);
-    return database.executar(instrucaoSql);
-}
 
+    return database.executar(instrucaoSql)
+        .then(function(resultado) {
+            const quizId = resultado.insertId; 
+            const promises = respostasDetalhadas.map(resposta => {
+                return registrarRespostaDetalhada(quizId, resposta.questionId, resposta.correct);
+            });
+
+            // Esperamos todas as respostas detalhadas serem inseridas
+            return Promise.all(promises);
+        })
+        .catch(function(erro) {
+            console.log(erro);
+            console.log("\nHouve um erro ao realizar o cadastro! Erro: ", erro.sqlMessage);
+            throw erro;
+        });
+}
 
 module.exports = {
     autenticar,
@@ -123,5 +149,6 @@ module.exports = {
     buscarMetricasQuiz,
     getKpi,
     totalDeVotosIndividual,
-    registrarRespostaQuiz
+    registrarRespostaQuiz,
+    buscarErroAcertoAdm
 };

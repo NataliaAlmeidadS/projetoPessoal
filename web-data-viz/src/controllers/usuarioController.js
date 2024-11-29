@@ -100,16 +100,30 @@ function buscarConjuntosVotados(req, res) {
 }
 
 
+// Controller - Obter Total de Votos
 function obterTotalVotos(req, res) {
-    var dadosGrafico = {};
-    var idUser = req.params.idUser;
+    var idUser = req.params.idUser;  // Obter o ID do usuário da URL
 
-    usuarioModel.totalDeVotos(idUser)
+    usuarioModel.totalDeVotos(idUser)  // Chama a função do model para obter o total de votos
         .then(function (resultado) {
-            dadosGrafico.totalVotos = resultado[0].totalVotos;
-            return usuarioModel.totalDeVotos(req);
+            // Verifica se o resultado contém dados
+            if (resultado && resultado.length > 0) {
+                res.json({ totalVotos: resultado[0].totalVotos });  // Retorna o total de votos
+            } else {
+                res.status(404).json({ mensagem: 'Usuário não encontrado ou sem votos.' });
+            }
         })
+        .catch(function (erro) {
+            console.log('Erro ao obter total de votos:', erro);
+            res.status(500).json({ mensagem: 'Erro no servidor.', erro: erro });
+        });
+}
 
+function obterTotalVotos(req, res) {
+    usuarioModel.totalDeVotos()
+        .then(function (resultado) {
+            res.json(resultado);  // Retorna os dados dos votos por livro
+        })
         .catch(function (erro) {
             console.log('Erro ao obter total de votos:', erro);
             res.status(500).json(erro);
@@ -129,6 +143,18 @@ function obterTotalVotosIndividual(req, res) {
         });
 }
 
+// Controller
+function buscarErroAcertoAdm(req, res) {
+    usuarioModel.buscarErroAcertoAdm()
+        .then(function (resultado) {
+            res.json(resultado);  // Retorna os dados para o front-end
+        })
+        .catch(function (erro) {
+            console.log('Erro ao obter total de votos:', erro);
+            res.status(500).json(erro);  // Retorna erro caso ocorra
+        });
+}
+
 function getKpi(req, res) {
     var idUser = req.query.parametro;
     usuarioModel.getKpi(idUser).then(resultado => {
@@ -141,6 +167,7 @@ function getKpi(req, res) {
         }
     );
 }
+
 function buscarMetricasQuiz(req, res) {
     var idUser = req.query.parametro;
     usuarioModel.buscarMetricasQuiz(idUser).then(resultado => {
@@ -168,25 +195,34 @@ function mostrarGrafico(req, res) {
 }
 
 function registrarRespostaQuiz(req, res) {
-    var idUser = req.body.idUserServer;
-    var acertos = req.body.acertosServer;
-    var erros = req.body.errosServer;
+    const idUser = req.body.idUserServer;
+    const acertos = req.body.acertosServer;
+    const erros = req.body.errosServer;
+    const respostas = req.body.respostas; // Agora esperamos o array de respostas detalhadas
 
+    // Registrar as métricas gerais de acertos e erros no banco de dados
     usuarioModel.registrarRespostaQuiz(idUser, acertos, erros)
-        .then(
-            function (resultado) {
-                res.json(resultado);
-            }
-        ).catch(
-            function (erro) {
-                console.log(erro);
-                console.log(
-                    "\nHouve um erro ao realizar o cadastro! Erro: ",
-                    erro.sqlMessage
-                );
-                res.status(500).json(erro.sqlMessage);
-            }
-        );
+        .then(function (resultado) {
+            // Após o registro das métricas gerais, vamos registrar as respostas detalhadas
+            const quizId = resultado.insertId;  // ID do quiz recém inserido no banco
+
+            // Agora registramos as respostas de cada questão
+            const promises = respostas.map(resposta => {
+                return usuarioModel.registrarRespostaDetalhada(quizId, resposta.questionId, resposta.correct);
+            });
+
+            // Esperamos que todas as promessas de inserção das respostas sejam resolvidas
+            return Promise.all(promises);
+        })
+        .then(function () {
+            // Se tudo deu certo, retornamos um sucesso
+            res.json({ message: "Métricas e respostas registradas com sucesso!" });
+        })
+        .catch(function (erro) {
+            console.log(erro);
+            console.log("\nHouve um erro ao realizar o cadastro! Erro: ", erro.sqlMessage);
+            res.status(500).json(erro.sqlMessage);
+        });
 }
 
 
@@ -197,7 +233,9 @@ module.exports = {
     buscarMetricasQuiz,
     mostrarGrafico,
     getKpi,
+    registrarRespostaQuiz,
+    obterTotalVotos,
     obterTotalVotosIndividual,
-    registrarRespostaQuiz
+    buscarErroAcertoAdm
 }
 

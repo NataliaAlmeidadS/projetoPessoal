@@ -1,27 +1,48 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
-  <link rel="stylesheet" href="./css/dash.css">
+  <link rel="stylesheet" href="./css/dash2.css">
 </head>
 
-<body>
+<body onload="mostrarGrafico(), mostrarGrafico2()">
   <header class="header">
-
-    <a href="./index_2.html" class="logo"><img class="logo" src="Img/anterior.png"> </a>
+    <div class="containerTit">
+      <a href="./index.html">
+        <h1 class="titulo">Inner</h1>
+        <div>
+          <h2 class="titulo2">Guide</h2>
+        </div>
+      </a>
+    </div>
+    <ul class="navbar">
+      <a href="./index.html">
+        <li>Home</li>
+      </a>
+      <a href="./votacao.html">
+        <li>Votação</li>
+      </a>
+      <a href="#dash">
+        <li>Dashboard</li>
+      </a>
+      <div class="divLC">
+        Olá, <span id="b_usuario">usuário</span>!
+      </div>
+    </ul>
   </header>
   <div class="container">
-   
-
-    <div class="conteudo">
+    <div class="conteudo1">
       <div class="grafico">
-        <canvas id="myChart2"></canvas>
-
+        <canvas id="myChart" style="width: 700px;"></canvas>
       </div>
-
+    </div>
+    <div class="conteudo2">
+      <div class="grafico2">
+        <canvas id="myChart2" style="width: 150px; height: 70px;"></canvas>
+      </div>
     </div>
   </div>
   </div>
@@ -29,123 +50,239 @@
 
 </html>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
 <script>
 
+  const idUser = sessionStorage.ID_USUARIO;
 
-  var ValorResultado = [];
-  var tentativa = [];
-  var ValorErros = [];
-  function mostrarGrafico() {
-    var erros = [];
+  function validarSessao() {
+    const email = sessionStorage.EMAIL_USUARIO;
+    const nome = sessionStorage.NOME_USUARIO;
 
-    fetch("http://localhost:3333/metricas/buscarMetrica")
-      .then(res => {
-        res.json().then(response => {
-          console.log(response);
-          for (var i = 0; i < response.length; i++) {
-            ValorResultado.push(response[i].qntdAcertos);
-            tentativa.push(`Tentativa ${i + 1}`);
-            ValorErros.push(response[i].qntdErros);
-            erros.push(`Tentativa ${i + 1}`);
-          }
-
-          console.log(erros);
-          console.log(ValorResultado);
-          console.log(ValorErros);
-          console.log(tentativa);
-
-          const ctx = document.getElementById('myChart');
-          ctx.style.display = 'flex'
-
-          new Chart(ctx, {
-            type: 'bar',
-            data: {
-              labels: tentativa,
-              datasets: [{
-                label: 'Quantidade de Acertos',
-                data: ValorResultado,
-                borderWidth: 1,
-                backgroundColor: ['#b26dbd']
-              },
-              {
-                label: 'Quantidade de Erros',
-                data: ValorErros,
-                borderWidth: 1,
-                backgroundColor: ['#142886']
-              }
-              ]
-            },
-            options: {
-              scales: {
-                y: {
-                  beginAtZero: true,
-                  max: 10
-                }
-              }
-            }
-          });
-
-          const ctx1 = document.getElementById('myChart1');
-          new Chart(ctx1, {
-            type: 'bar',
-            data: {
-              labels: tentativa,
-              datasets: [{
-                label: 'Quantidade de Acertos',
-                data: ValorResultado,
-                borderWidth: 1,
-                backgroundColor: '#b26dbd'
-              
-              }]
-            },
-            options: {
-              scales: {
-                y: {
-                  beginAtZero: true,
-                  max: 10
-                }
-              }
-            }
-          });
-          const ctx2 = document.getElementById('myChart2');
-          new Chart(ctx2, {
-            type: 'bar',
-            data: {
-              labels: tentativa,
-              datasets: [{
-                label: 'Quantidade de Erros',
-                data: ValorErros,
-                borderWidth: 1,
-                backgroundColor: '#142886'
-              }]
-            },
-            options: {
-              scales: {
-                y: {
-                  beginAtZero: true,
-                  max: 10
-                }
-              }
-            }
-
-          });
-        })
-
-
-          .catch(err => {
-            console.error('Erro ao buscar métrica:', err);
-          });
-
-
-      });
-
-
-
-
-    comparar();
+    if (!email || !nome) {
+      alert("Sessão inválida! Faça login novamente.");
+      window.location = "./login.html";
+    } else {
+      document.getElementById("b_usuario").innerHTML = nome;
+      document.getElementById("p_usuario").innerHTML = nome;
+    }
   }
 
-  window.onload = mostrarGrafico;
+  validarSessao();
+
+  function mostrarGrafico() {
+    const ctx5 = document.getElementById('myChart').getContext('2d');
+    let grafico;
+
+    if (grafico) {
+      grafico.destroy();
+    }
+
+    fetch(`/usuarios/dados-grafico2`)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Erro ao obter dados para o gráfico');
+        }
+        return response.json();
+      })
+      .then(resposta => {
+        const dados = resposta.map(item => item.totalVotos);  // Mapeia os votos por livro
+        const labels = resposta.map(item => `Livro ${item.idLivro}`);  // Labels de livros
+
+        console.log('Dados extraídos:', dados);
+
+        if (dados.length === 0) {
+          console.error('Nenhum dado encontrado para o gráfico.');
+          return;
+        }
+
+        // Calcular o valor máximo dos dados para ajustar o eixo Y
+        const valorMaximo = Math.max(...dados);
+
+        const determineColor = (label) => {
+          return 'rgba(54, 162, 235, 0.2)';  // Cor azul para os livros
+        };
+
+        // Criação do gráfico
+        grafico = new Chart(ctx5, {
+          type: 'bar',
+          data: {
+            labels: labels,
+            datasets: [{
+              label: 'Total de Votos',
+              data: dados,  // Dados extraídos da API
+              backgroundColor: dados.map(() => determineColor()),  // Cor para cada barra
+              borderColor: dados.map(() => determineColor().replace('0.2', '1')),
+              borderWidth: 1,
+              barThickness: 87  // Ajusta a largura da barra
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              y: {
+                beginAtZero: true,
+                min: 0,
+                max: valorMaximo + 10,  // Ajusta o valor máximo do eixo Y
+                grid: {
+                  color: '#6c6877af',
+                },
+                border: {
+                  color: '#6c6877af',
+                }
+              },
+              x: {
+                ticks: {
+                  display: false,  // Esconde as marcas no eixo X
+                },
+                grid: {
+                  color: '#6c6877af',
+                },
+                border: {
+                  color: '#6c6877af'
+                }
+              }
+            },
+            plugins: {
+              legend: {
+                display: false,
+                labels: {
+                  color: '#FFFF'
+                }
+              },
+              tooltip: {
+                titleColor: '#FFFF',
+                bodyColor: '#FFFF',
+              },
+              title: {
+                display: true,
+                text: `Votos de Todos os Livros`,
+                color: '#FFFF',
+                font: {
+                  size: 25,
+                  weight: 'bold'
+                }
+              }
+            }
+          }
+        });
+      })
+      .catch(error => {
+        console.error('Erro ao buscar dados:', error);
+      });
+  }
+
+
+function mostrarGrafico2() {
+    const ctx5 = document.getElementById('myChart2').getContext('2d');
+    let grafico = null;
+
+    // Faz a requisição para o servidor
+    fetch(`/usuarios/buscarErrosAcertoAdm`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Erro ao obter dados para o gráfico');
+            }
+            return response.json();  // Converte a resposta para JSON
+        })
+        .then(resposta => {
+            const dadosErros = resposta.map(item => item.qntdErros);  // Mapeia os erros
+            const dadosAcertos = resposta.map(item => item.qntdAcertos);  // Mapeia os acertos
+            const labels = resposta.map(item => `(${item.dataQuiz})`);  // Usamos o formato de data como label
+
+            console.log('Dados extraídos:', { dadosErros, dadosAcertos });
+
+            if (dadosErros.length === 0 && dadosAcertos.length === 0) {
+                console.error('Nenhum dado encontrado para o gráfico.');
+                return;
+            }
+
+            const valorMaximo = Math.max(...dadosErros.concat(dadosAcertos));  // Calcula o valor máximo para o eixo Y
+
+            // Se já houver um gráfico, destrói o anterior antes de criar um novo
+            if (grafico) {
+                grafico.destroy();
+            }
+
+            // Criação do gráfico
+            grafico = new Chart(ctx5, {
+                type: 'line',
+                data: {
+                    labels: labels,  // Labels serão os Quizzes e as datas
+                    datasets: [
+                        {
+                            label: 'Total de Acertos',
+                            data: dadosAcertos,
+                            backgroundColor: 'rgba(75, 192, 192, 0.2)',  // Cor para acertos
+                            borderColor: 'rgba(75, 192, 192, 1)',  // Cor para borda dos acertos
+                            borderWidth: 1,
+                            barThickness: 87,
+                        },
+                        {
+                            label: 'Total de Erros',
+                            data: dadosErros,
+                            backgroundColor: 'rgba(255, 99, 132, 0.2)',  // Cor para erros
+                            borderColor: 'rgba(255, 99, 132, 1)',  // Cor para borda dos erros
+                            borderWidth: 1,
+                            barThickness: 87,
+                        }
+                    ],
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            min: 0,
+                            max: valorMaximo + 10,  // Ajusta o valor máximo do eixo Y
+                            grid: {
+                                color: '#6c6877af',
+                            },
+                            border: {
+                                color: '#6c6877af',
+                            },
+                        },
+                        x: {
+                            ticks: {
+                                display: true,  // Exibe as datas no eixo X
+                            },
+                            grid: {
+                                color: '#6c6877af',
+                            },
+                            border: {
+                                color: '#6c6877af',
+                            },
+                        },
+                    },
+                    plugins: {
+                        legend: {
+                            display: true,
+                            labels: {
+                                color: '#FFFF',
+                            },
+                        },
+                        tooltip: {
+                            titleColor: '#FFFF',
+                            bodyColor: '#FFFF',
+                        },
+                        title: {
+                            display: true,
+                            text: `Gráfico de erros e acertos gerais do quiz`,
+                            color: '#FFFF',
+                            font: {
+                                size: 25,
+                                weight: 'bold',
+                            },
+                        },
+                    },
+                },
+            });
+        })
+        .catch(error => {
+            console.error('Erro ao buscar dados:', error.message);  // Log de erro no console
+        });
+}
+
 
 </script>

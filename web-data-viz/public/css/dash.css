@@ -24,7 +24,6 @@ body {
     justify-content: center;
     margin-top: 48px;
     margin-left: 125px;
-
 }
 
 @font-face {
@@ -50,8 +49,6 @@ body {
     align-items: center;
     font-size: larger;
     gap: 5vh;
-
-
 }
 
 .navbar li {
@@ -135,6 +132,7 @@ body {
     margin-left: 90px;
     margin-top: -60px;
 }
+
 .grafico2  {
     width: 40%;
     display: flex;

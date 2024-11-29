@@ -75,115 +75,107 @@
   validarSessao();
 
   function grafico1() {
-  const ctx = document.getElementById('myChart').getContext('2d');
-  var tentativa = [];
-  var tentativaAtual = 0;  // Definindo a tentativa atual (você pode atribuir dinamicamente)
+    const ctx = document.getElementById('myChart').getContext('2d');
+    var tentativa = [];
+    var tentativaAtual = 0;  // Definindo a tentativa atual (você pode atribuir dinamicamente)
 
-  fetch(`/usuarios/buscarMetricasQuiz?parametro=${idUser}`)
-    .then(response => {
-      if (!response.ok) throw new Error('Erro ao obter os dados do servidor');
-      return response.json();
-    })
-    .then(data => {
-      if (!Array.isArray(data) || data.length === 0) throw new Error("Dados inválidos ou vazios.");
+    fetch(`/usuarios/buscarMetricasQuiz?parametro=${idUser}`)
+        .then(response => {
+            if (!response.ok) throw new Error('Erro ao obter os dados do servidor');
+            return response.json();
+        })
+        .then(data => {
+            if (!Array.isArray(data) || data.length === 0) throw new Error("Dados inválidos ou vazios.");
 
-      // Definindo um array de cores para as barras
-      const cores = [
-        'rgba(54, 162, 235, 0.6)',  // Azul
-        'rgba(255, 99, 132, 0.6)',  // Vermelho
-        'rgba(75, 192, 192, 0.6)',  // Verde
-        'rgba(153, 102, 255, 0.6)', // Roxo
-        'rgba(255, 159, 64, 0.6)',  // Laranja
-        'rgba(255, 205, 86, 0.6)',  // Amarelo
-        'rgba(201, 203, 207, 0.6)', // Cinza
-      ];
-
-      // Atualizar as labels de tentativa
-      for (let i = 0; i < data.length; i++) {
-        tentativa.push(`Tentativa ${i + 1}`);
-      }
-
-      // Extrair valores máximos de acertos e erros
-      const maxAcertos = Math.max(...data.map(item => item.qntdAcertos));
-      const maxErros = Math.max(...data.map(item => item.qntdErros));
-      const valorMaximo = Math.max(maxAcertos, maxErros);
-
-      // Criação do gráfico
-      new Chart(ctx, {
-        type: 'bar',
-        data: {
-          labels: tentativa,  // Exibe as tentativas no eixo X
-          datasets: [
-            {
-              label: 'Acertos',
-              data: data.map(item => item.qntdAcertos),
-              backgroundColor: data.map((_, index) => cores[index % cores.length]), // Atribui uma cor do array de cores
-              borderColor: data.map((_, index) => cores[index % cores.length].replace('0.6', '1')),  // A cor da borda será um pouco mais intensa
-              borderWidth: 1,
-              barThickness: 70,  // Largura maior para as barras
-            },
-            {
-              label: 'Erros',
-              data: data.map(item => item.qntdErros),
-              backgroundColor: data.map((_, index) => cores[(index + 1) % cores.length]),  // Usar uma cor diferente para erros
-              borderColor: data.map((_, index) => cores[(index + 1) % cores.length].replace('0.6', '1')),  // Borda mais intensa
-              borderWidth: 1,
-              barThickness: 70,  // Largura maior para as barras
+            // Atualizar as labels de tentativa
+            for (let i = 0; i < data.length; i++) {
+                tentativa.push(`Tentativa ${i + 1}`);
             }
-          ]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          scales: {
-            y: {
-              beginAtZero: true,
-              min: 0,
-              max: valorMaximo + 10,  // Ajusta o valor máximo do eixo Y
-              grid: {
-                color: '#6c6877af',  // Cor das linhas da grade
-              },
-              border: {
-                color: '#6c6877af',
-              }
-            },
-            x: {
-              grid: {
-                color: '#6c6877af',  // Cor das linhas da grade
-              },
-              border: {
-                color: '#6c6877af'
-              },
-              barPercentage: 0.8,  // Aumenta o espaçamento entre as barras (diminui a largura relativa da categoria)
-              categoryPercentage: 0.8,  // Aumenta o espaço entre as barras
-            }
-          },
-          plugins: {
-            legend: {
-              labels: {
-                color: '#FFFF'  // Cor da legenda
-              }
-            },
-            tooltip: {
-              titleColor: '#FFFF',
-              bodyColor: '#FFFF',
-            },
-            title: {
-              display: true,
-              text: 'Métricas de Acertos e Erros',
-              color: '#FFFF',
-              font: {
-                size: 25,
-                weight: 'bold'
-              }
-            }
-          }
-        }
-      });
-    })
-    .catch(error => console.error('Erro ao obter os dados:', error));
+
+            // Extrair valores máximos de acertos e erros
+            const maxAcertos = Math.max(...data.map(item => item.qntdAcertos));
+            const maxErros = Math.max(...data.map(item => item.qntdErros));
+            const valorMaximo = Math.max(maxAcertos, maxErros);
+
+            // Definir as cores para acertos e erros
+            const corAcertos = 'rgba(54, 162, 235, 0.6)';  // Azul
+            const corErros = 'rgba(255, 99, 132, 0.6)';  // Vermelho
+
+            // Criação do gráfico
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: tentativa,  // Exibe as tentativas no eixo X
+                    datasets: [
+                        {
+                            label: 'Acertos',
+                            data: data.map(item => item.qntdAcertos),
+                            backgroundColor: new Array(data.length).fill(corAcertos),  // Usar azul para todos os acertos
+                            borderColor: new Array(data.length).fill(corAcertos.replace('0.6', '1')),  // Borda azul mais intensa
+                            borderWidth: 1,
+                            barThickness: 70,  // Largura maior para as barras
+                        },
+                        {
+                            label: 'Erros',
+                            data: data.map(item => item.qntdErros),
+                            backgroundColor: new Array(data.length).fill(corErros),  // Usar vermelho para todos os erros
+                            borderColor: new Array(data.length).fill(corErros.replace('0.6', '1')),  // Borda vermelha mais intensa
+                            borderWidth: 1,
+                            barThickness: 70,  // Largura maior para as barras
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            min: 0,
+                            max: valorMaximo + 10,  // Ajusta o valor máximo do eixo Y
+                            grid: {
+                                color: '#6c6877af',  // Cor das linhas da grade
+                            },
+                            border: {
+                                color: '#6c6877af',
+                            }
+                        },
+                        x: {
+                            grid: {
+                                color: '#6c6877af',  // Cor das linhas da grade
+                            },
+                            border: {
+                                color: '#6c6877af'
+                            },
+                            barPercentage: 0.8,  // Aumenta o espaçamento entre as barras
+                            categoryPercentage: 0.8,  // Aumenta o espaço entre as barras
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: '#FFFF'  // Cor da legenda
+                            }
+                        },
+                        tooltip: {
+                            titleColor: '#FFFF',
+                            bodyColor: '#FFFF',
+                        },
+                        title: {
+                            display: true,
+                            text: 'Métricas de Acertos e Erros',
+                            color: '#FFFF',
+                            font: {
+                                size: 25,
+                                weight: 'bold'
+                            }
+                        }
+                    }
+                }
+            });
+        })
+        .catch(error => console.error('Erro ao obter os dados:', error));
 }
-
 
   let grafico
 
@@ -355,7 +347,6 @@
       });
 
   }
-
 
 </script>
 
