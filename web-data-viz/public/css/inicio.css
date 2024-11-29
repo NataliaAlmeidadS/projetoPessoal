@@ -1,7 +1,7 @@
 body {
     margin: 0;
     padding: 0;
-    background-color: black;
+    background-color: #DEDAD5;
     overflow-x: hidden;
     cursor: pointer;
 }
@@ -217,7 +217,6 @@ section {
 .card {
     width: 280px;
     height: 360px;
-    background: #fff;
     display: flex;
     align-items: flex-end;
     padding: 2rem 1rem;
@@ -456,7 +455,7 @@ section {
 
 .footer {
     height: 50px;
-    color: #fff;
+    color: black;
     display: flex;
     font-size: 15px;
     align-items: center;
@@ -473,4 +472,9 @@ section {
 .footer h4{
     margin: 0;
     white-space: nowrap;
+}
+
+.imgAmigos{
+    width: 460px;
+    background: transparent;
 }
